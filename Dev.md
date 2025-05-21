@@ -1,47 +1,47 @@
-# 开发环境搭建与启动指南
+# Development Environment Setup and Startup Guide
 
-## 1. 环境准备
+## 1. Environment Preparation
 
-建议使用 Anaconda 或 Python 3.10+ 虚拟环境。
+It is recommended to use Anaconda or a Python 3.10+ virtual environment.
 
-### 使用 Anaconda 创建环境
+### Create Environment with Anaconda
 ```bash
 conda create -n django_env python=3.10
 conda activate django_env
 ```
 
-### 安装依赖
-推荐使用 pyproject.toml 进行依赖安装（确保已激活虚拟环境）：
+### Install Dependencies
+It is recommended to use pyproject.toml for dependency installation (make sure the virtual environment is activated):
 ```bash
 pip install .[dev]
 ```
-如果你需要 requirements.txt，可以通过如下命令生成：
+If you need a requirements.txt, you can generate it with:
 ```bash
 pip freeze > requirements.txt
 ```
-（本项目默认未提供 requirements.txt）
+(This project does not provide requirements.txt by default.)
 
-## 2. 数据库迁移
+## 2. Database Migration
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-## 3. 创建超级用户（用于后台管理）
+## 3. Create Superuser (for Admin Panel)
 ```bash
 python manage.py createsuperuser
 ```
 
-## 4. 启动开发服务器
+## 4. Start Development Server
 ```bash
 python manage.py runserver
 ```
 
-## 5. 访问项目
-- 管理后台: http://127.0.0.1:8000/admin/
-- 用户认证: http://127.0.0.1:8000/accounts/
-- API接口: http://127.0.0.1:8000/api/
+## 5. Access the Project
+- Admin Panel: http://127.0.0.1:8000/admin/
+- User Authentication: http://127.0.0.1:8000/accounts/
+- API Endpoints: http://127.0.0.1:8000/api/
 
-## 6. 其他说明
-- 图片上传目录为 `media/`，开发环境已自动配置静态与媒体文件服务。
-- 如需前端开发或部署，请参考 Workflow.md 的后续阶段说明。
+## 6. Other Notes
+- The image upload directory is `media/`, and static/media file serving is automatically configured for development.
+- For frontend development or deployment, please refer to the subsequent phases in Workflow.md.
