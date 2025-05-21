@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# Django migration files
+core/migrations/*_initial.py
+
+# PyCharm/IDEA
+.idea/
+
+# VSCode
+.vscode/
+
+# Vim
+.vim/
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
+
+# Environments
+.env
+venv/
+django_env/
