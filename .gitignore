@@ -32,3 +32,5 @@ core/migrations/*_initial.py
 .env
 venv/
 django_env/
+build/
+vdv.egg-info/

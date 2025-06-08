@@ -11,11 +11,11 @@
 
 ## Phase 2: User Functions (Week 2)
 
-- [ ] POST `/api/reports/`: Create a report with image, GPS, text  
-- [ ] GET `/api/reports/`: List & filter reports  
-- [ ] POST `/api/votes/`: Upvote a report (one per user)  
-- [ ] Multilingual support: integrate `argos-translate` to auto-translate  
-- [ ] NLP categorization: `spaCy` rule-based classifier for categories (optional fallback to manual)  
+- [x] POST `/api/reports/`: Create a report with image, GPS, text  
+- [x] GET `/api/reports/`: List & filter reports  
+- [x] POST `/api/votes/`: Upvote a report (one per user)  
+- [x] Multilingual support: integrate `argos-translate` to auto-translate  
+- [x] NLP categorization: `spaCy` rule-based classifier for categories (optional fallback to manual)  
 
 ## Phase 3: Admin & Feedback (Week 3)
 
