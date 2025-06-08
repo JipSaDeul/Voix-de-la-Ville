@@ -143,3 +143,5 @@ LOGIN_URL = '/accounts/login/'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_AUTHENTICATED_REDIRECT_URL = '/accounts/login/'
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
