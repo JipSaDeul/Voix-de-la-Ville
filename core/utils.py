@@ -1,13 +1,18 @@
 # core.utils
-from typing import Tuple, Optional
+from typing import Dict, Optional, Tuple
 
 import spacy
 from argostranslate import translate
-from charset_normalizer import detect
 from django.http import HttpRequest
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+from langdetect import DetectorFactory, detect_langs, LangDetectException
 
-from .models import Comment
-from .models import Vote
+from .models import Comment, Vote
+
+"""
+Models Related
+"""
+
 
 def get_user_id(request: HttpRequest) -> Optional[int]:
     """
@@ -72,8 +77,63 @@ def create_vote(user_id: int, report_id: int) -> Tuple[Optional[Vote], bool]:
         return None, False
 
 
+def build_report_data(reports):
+    """
+    Helper function to build data for each report including vote count and related fields.
+
+    :param reports: A queryset of Report objects.
+    :return: A list of dictionaries containing the report details.
+    """
+    data = []
+    for r in reports:
+        # Get vote count either from annotate or manually
+        vote_count = r.vote_count if hasattr(r, 'vote_count') else Vote.objects.filter(report=r).count()
+
+        data.append({
+            "id": r.id,
+            "title": r.title,
+            "description": r.description,
+            "vote_count": vote_count,  # Handle vote count
+            "status": r.status,
+            "latitude": round(r.latitude, 4),
+            "longitude": round(r.longitude, 4),
+            "image_url": r.image.url if r.image else None,  # Check if image exists
+            "category": r.category.name if r.category else None,  # Access related category name
+            "user_email": r.user.email if r.user else None,  # Access related user's email
+            "user_name": r.user.username if r.user else None,  # Access related user's username
+            "created_at": r.created_at,
+        })
+    return data
+
+
+"""
+Translations Related
+"""
+
 # Load the spaCy model (e.g., en_core_web_sm) for natural language processing
 nlp = spacy.load("en_core_web_sm")
+tokenizer = AutoTokenizer.from_pretrained("unitary/toxic-bert")
+model = AutoModelForSequenceClassification.from_pretrained("unitary/toxic-bert")
+toxic_classifier = pipeline("text-classification", model=model, tokenizer=tokenizer, device=-1)
+
+DetectorFactory.seed = 0
+
+
+def detect_language(text: str) -> str:
+    """
+    Detect the language of a given text, prioritizing English and French.
+    If detected language is not in allowed list, fallback to English.
+    """
+    allowed = {"en", "fr", "de", "es"}
+    try:
+        # detect_langs returns a list of possible languages with probabilities
+        lang_probs = detect_langs(text)
+        for lang in lang_probs:
+            if lang.lang in allowed:
+                return lang.lang
+        return "en"  # fallback if no allowed language found
+    except LangDetectException:
+        return "en"
 
 
 def auto_translate(text: str, from_lang: str = "fr", to_lang: str = "en") -> str:
@@ -102,30 +162,30 @@ def auto_translate(text: str, from_lang: str = "fr", to_lang: str = "en") -> str
     return text
 
 
-from typing import Dict
+def to_eng(text: str) -> str:
+    lang_code = detect_language(text)
+
+    if lang_code != "en":
+        return auto_translate(text, from_lang=lang_code, to_lang="en")
+    return text
 
 
-def nlp_categorize(text: str) -> Dict[str, str]:
-    """
-    Categorizes the input text into one of the predefined categories based on keywords.
-    If the text is in French, it will be translated to English first.
+def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
+    text_en = to_eng(text).strip()
+    if not text_en:
+        return None
 
-    :param text: The input text to be categorized.
-    :return: A dictionary containing the 'name' and 'description' of the category
-             with the highest match. If no category is matched, returns "other".
-    """
+    doc = nlp(text_en)
 
-    # Detect the language of the text (default to English)
-    language = detect(text.encode('utf-8'))
+    # Nonsense
+    meaningful_tokens = [
+        t for t in doc
+        if t.is_alpha and len(t.text) > 2 and not t.is_oov
+    ]
 
-    # If the text is in French, translate it to English
-    if language == 'fr':
-        text = auto_translate(text, from_lang="fr", to_lang="en")
+    if len(meaningful_tokens) < 1:
+        return None
 
-    # Process the text using the NLP model (spaCy)
-    doc = nlp(text)
-
-    # Define the categories with corresponding keywords and descriptions
     categories = {
         "infrastructure": {
             "name": "Infrastructure",
@@ -164,54 +224,37 @@ def nlp_categorize(text: str) -> Dict[str, str]:
         }
     }
 
-    # Initialize the category counts
-    categories_count = {key: 0 for key in categories}
+    counts = {key: 0 for key in categories}
+    for token in meaningful_tokens:
+        for key, info in categories.items():
+            if token.lemma_.lower() in info["keywords"]:
+                counts[key] += 1
 
-    # Process each token in the document and count matches with keywords
-    for token in doc:
-        for category, data in categories.items():
-            if token.lemma_ in data["keywords"]:
-                categories_count[category] += 1
+    best_match = max(counts, key=counts.get)
+    if counts[best_match] == 0:
+        return categories["other"]
 
-    # Find the category with the highest count
-    max_category = max(categories_count, key=categories_count.get)
-
-    # If no category has any matches, return the "other" category
-    if categories_count[max_category] == 0:
-        return categories["other"]  # If no category matched, return the "other" category
-
-    # Return the name and description of the category with the highest count
     return {
-        "name": categories[max_category]["name"],
-        "description": categories[max_category]["description"]
+        "name": categories[best_match]["name"],
+        "description": categories[best_match]["description"]
     }
 
 
-
-
-
-def build_report_data(reports):
+def detect_profanity(text: str, threshold: float = 0.6) -> Dict[str, object]:
     """
-    Helper function to build data for each report including vote count and related fields.
+    Detects whether the input text contains offensive or toxic language.
+    Handles language detection and automatic translation before classification.
 
-    :param reports: A queryset of Report objects.
-    :return: A list of dictionaries containing the report details.
+    :param text: The input text to analyze.
+    :param threshold: The score threshold to consider text as toxic.
+    :return: Dictionary with `is_toxic`, `score`, `label` (if applicable).
     """
-    data = []
-    for r in reports:
-        # Get vote count either from annotate or manually
-        vote_count = r.vote_count if hasattr(r, 'vote_count') else Vote.objects.filter(report=r).count()
 
-        data.append({
-            "id": r.id,
-            "title": r.title,
-            "description": r.description,
-            "vote_count": vote_count,  # Handle vote count
-            "status": r.status,
-            "image_url": r.image.url if r.image else None,  # Check if image exists
-            "category": r.category.name if r.category else None,  # Access related category name
-            "user_email": r.user.email if r.user else None,  # Access related user's email
-            "user_name": r.user.username if r.user else None,  # Access related user's username
-            "created_at": r.created_at,
-        })
-    return data
+    text_en = to_eng(text)
+
+    result = toxic_classifier(text_en)[0]
+
+    return {
+        "is_toxic": result["score"] >= threshold,
+        "score": result["score"]
+    }

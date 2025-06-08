@@ -1,4 +1,4 @@
-# MVP Development Workflow of "VdV(Voix de la Ville)"
+# MVP Development Workflow of "VdV (Voix de la Ville)"
 
 ## Phase 1: Foundation (Week 1)
 
@@ -21,7 +21,7 @@
 
 - [ ] Django Admin setup: Staff can change report status  
 - [ ] Add status update notifications (email or frontend-polling)  
-- [ ] Add moderation for comments  
+- [x] Add moderation for comments (auto by AI, only avoiding profanity)  
 - [ ] API: municipal staff can comment via admin or frontend  
 - [ ] Map integration (using `leaflet.js` or `mapbox`): report locations on map  
 

@@ -13,7 +13,8 @@ conda activate django_env
 ### Install Dependencies
 It is recommended to use pyproject.toml for dependency installation (make sure the virtual environment is activated):
 ```bash
-pip install .[dev]
+pip install .  
+python scripts/download_models.py
 ```
 If you need a requirements.txt, you can generate it with:
 ```bash

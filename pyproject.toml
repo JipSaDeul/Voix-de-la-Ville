@@ -3,7 +3,7 @@ name = "vdv"
 version = "0.1.0"
 description = "Voix de la Ville - Django MVP"
 authors = [
-    { name="JH Bae", email="mastropseudo@gmail.com" }
+    { name = "JH Bae", email = "mastropseudo@gmail.com" }
 ]
 requires-python = ">=3.10"
 
@@ -15,7 +15,9 @@ dependencies = [
     "pillow",
     "spacy",
     "argostranslate",
-    "charset-normalizer"
+    "transformers",
+    "torch",
+    "langdetect"
 ]
 
 [project.optional-dependencies]

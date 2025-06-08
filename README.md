@@ -23,7 +23,7 @@ A Django-based MVP for urban voice reporting and moderation.
 3. **Install dependencies**
    ```bash
    pip install .
-   python scripts/download_spacy_model.py
+   python scripts/download_models.py
    ```
 
 4. **Apply migrations**
@@ -46,6 +46,42 @@ A Django-based MVP for urban voice reporting and moderation.
    - Admin: http://127.0.0.1:8000/admin/
    - Auth: http://127.0.0.1:8000/accounts/
    - API: http://127.0.0.1:8000/api/
+
+---
+
+## Mock Data
+
+To assist with development and testing, you can seed and clear sample data using custom Django management commands.
+
+### Seed Development Data
+
+```bash
+python manage.py dev_seed
+```
+
+This will:
+
+* Create sample users
+* Generate reports with random categories, images, GPS coordinates
+* Add comments and votes to simulate real usage
+* Use multilingual descriptions (English, French, Spanish, German)
+* Trigger the NLP categorization pipeline
+
+### Clear Development Data
+
+```bash
+python manage.py clear_dev_data
+```
+
+This will:
+
+* Remove all `Report`, `Vote`, `Comment` entries
+* Optionally remove auto-generated categories
+* Does **not** delete admin or manually created users
+
+> ⚠️ Use with caution: this operation deletes data from the database.
+
+---
 
 ## Development
 

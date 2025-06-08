@@ -9,4 +9,8 @@ urlpatterns = [
     path("reports/<int:report_id>/comments/", views.report_comments, name="report_comments"),
     path("categories/", views.get_report_categories, name="get_report_categories"),
     path("reports/by_category/", views.get_reports_by_category, name="get_reports_by_category"),
+
+    path("reports/user/", views.user_reports_by_time),
+    path("reports/user/voted/", views.user_voted_reports),
+    path("reports/user/commented/", views.user_commented_reports),
 ]

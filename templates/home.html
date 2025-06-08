@@ -1,19 +1,68 @@
-<!-- templates/home.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <script type="module" src="{% static 'js/main.js' %}"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Home Page</h1>
-    <p>Welcome, {{ user.username }}</p>
+<h1>Welcome to the Home Page</h1>
+<p>Welcome, {{ user.username }}</p>
 
-    <!-- logout -->
-    {% if user.is_authenticated %}
-        <p><a href="/accounts/logout/">Logout</a></p>
-    {% else %}
-        <p><a href="/accounts/login/">Login</a> | <a href="/accounts/signup/">Sign Up</a></p>
-    {% endif %}
+<nav>
+    <button data-page="page-all">All Reports</button>
+    <button data-page="page-my">My Activity</button>
+    <button data-page="page-new">New Report</button>
+</nav>
+
+
+<div id="page-all" class="page">
+    <h2>All Reports</h2>
+
+    <label for="category-filter">Filter by category:</label>
+    <select id="category-filter">
+        <option value="">All</option>
+    </select>
+
+    <label for="count-filter">Number of reports:</label>
+    <input id="count-filter" type="number" min="10" value="10"/>
+
+    <div id="reports"></div>
+</div>
+
+
+<div id="page-my" class="page hidden">
+    <h2>My Reports</h2>
+    <div id="my-reports"></div>
+    <h2>My Votes</h2>
+    <div id="my-votes"></div>
+    <h2>My Comments</h2>
+    <div id="my-comments"></div>
+</div>
+
+<div id="page-new" class="page" style="display: none;">
+    <h2>New Report</h2>
+    <label for="new-title">
+    </label><input type="text" id="new-title" placeholder="Title"><br>
+    <label for="new-description"></label>
+    <textarea id="new-description" placeholder="Description"></textarea><br>
+    <input type="file" id="new-image" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+    <br>
+    <button id="submit-report">Submit</button>
+    <p id="submit-result"></p>
+</div>
+
+
+<script>
+    window.APP_CONFIG = {
+        userLang: navigator.language.startsWith("fr") ? "fr" : "en"
+    };
+</script>
 </body>
 </html>
