@@ -22,7 +22,8 @@ A Django-based MVP for urban voice reporting and moderation.
 
 3. **Install dependencies**
    ```bash
-   pip install .[dev]
+   pip install .
+   python scripts/download_spacy_model.py
    ```
 
 4. **Apply migrations**

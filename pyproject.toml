@@ -3,18 +3,33 @@ name = "vdv"
 version = "0.1.0"
 description = "Voix de la Ville - Django MVP"
 authors = [
-    { name="Your Name", email="your@email.com" }
+    { name="JH Bae", email="mastropseudo@gmail.com" }
 ]
 requires-python = ">=3.10"
 
-[project.optional-dependencies]
-dev = [
+dependencies = [
     "django>=5.1",
     "djangorestframework",
     "django-allauth",
     "django-cors-headers",
     "pillow",
+    "spacy",
+    "argostranslate",
+    "charset-normalizer"
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "mypy",
+    "isort",
+    "django-debug-toolbar"
+]
+
+# Define your entry-points for console scripts
+[project.scripts]
+download_spacy_model = "scripts.download_spacy_model:download_spacy_model"
 
 [tool.setuptools]
 packages = ["core"]
