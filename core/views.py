@@ -1,24 +1,30 @@
+# core.views
+
 import json
 import os
 import uuid
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from django.http import JsonResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render
+from django.db.models import Count, Max
+from django.http import JsonResponse, HttpResponseBadRequest, HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import now
 
-from core.utils import get_user_id, create_vote, create_or_update_comment, nlp_categorize, auto_translate, \
-    build_report_data
-from .models import Report, Comment
-from .models import ReportCategory
+from core.utils import (get_user_id, create_vote, create_or_update_comment, nlp_categorize, auto_translate, \
+                        build_report_data, detect_profanity)
+from .models import Report, Comment, ReportCategory
 
 
 @login_required
-def home(request):
+def home(request: HttpRequest) -> HttpResponse:
+    """
+    @brief Render the home page.
+    @param request The HTTP request object.
+    @return Rendered home page as HttpResponse.
+    """
     return render(request, 'home.html')
 
 
@@ -47,7 +53,8 @@ def top_pending_reports(request):
 @csrf_exempt
 def reports_list(request):
     if request.method == "GET":
-        reports = Report.objects.all()
+        N = int(request.GET.get("n", 10))
+        reports = Report.objects.all().order_by("-created_at")[:N]
         # Build the report data using the abstracted helper function
         data = build_report_data(reports)
         # Return the response with the data
@@ -59,16 +66,39 @@ def reports_list(request):
                 return JsonResponse({"error": "Missing data field"}, status=400)
             data = json.loads(data_json)
             image = request.FILES.get("image")
+            if image:
+                if image.content_type not in ["image/jpeg", "image/png"]:
+                    return JsonResponse({"error": "Invalid image type"}, status=400)
+                if image.size > 2 * 1024 * 1024:
+                    return JsonResponse({"error": "Image is too large"}, status=400)
         else:
             data = json.loads(request.body)
             image = None
 
-        category = nlp_categorize(data["description"])
-        category = ReportCategory.objects.filter(name=category["name"]).first()
+        title = data.get("title", "")
+        description = data.get("description", "")
+
+        profanity_title = detect_profanity(title)
+        profanity_desc = detect_profanity(description)
+
+        if profanity_title["is_toxic"] or profanity_desc["is_toxic"]:
+            return JsonResponse({
+                "error": "Your report contains inappropriate language.",
+                "title_score": profanity_title["score"],
+                "description_score": profanity_desc["score"]
+            }, status=400)
+
+        category_data = nlp_categorize(description)
+        if category_data is None:
+            return JsonResponse({
+                "error": "Your description could not be understood. Please describe the issue more clearly."
+            }, status=400)
+
+        category = ReportCategory.objects.filter(name=category_data["name"]).first()
 
         if not category:
-            category = ReportCategory.objects.create(name=category["name"],
-                                                     description=category["description"])
+            category = ReportCategory.objects.create(name=category_data["name"],
+                                                     description=category_data["description"])
 
         current_user_id = get_user_id(request)  # get current user id
         if current_user_id is None:
@@ -89,6 +119,91 @@ def reports_list(request):
             report.image.save(unique_name, image)
 
         return JsonResponse({"id": report.id}, status=201)
+
+
+@login_required
+@require_GET
+def user_reports_by_time(request):
+    """
+    Returns reports created by the current user, filtered by an optional time range,
+    and sorted by creation time in descending order (latest first).
+    """
+    user_id = get_user_id(request)
+    if user_id is None:
+        return JsonResponse({"error": "User not authenticated"}, status=401)
+
+    start_time_str = request.GET.get("start")
+    end_time_str = request.GET.get("end")
+
+    try:
+        # Parse start and end time from query parameters
+        start_time = parse_datetime(start_time_str) if start_time_str else None
+        end_time = parse_datetime(end_time_str) if end_time_str else now()
+
+        # Base queryset: reports created by the current user
+        reports = Report.objects.filter(user_id=user_id)
+
+        # Apply time filtering if provided
+        if start_time:
+            reports = reports.filter(created_at__gte=start_time)
+        if end_time:
+            reports = reports.filter(created_at__lte=end_time)
+
+        # Sort reports by creation time (latest first)
+        reports = reports.order_by("-created_at")
+
+        # Use helper to build response data
+        data = build_report_data(reports)
+        return JsonResponse({"reports": data})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+
+@require_GET
+@login_required
+def user_voted_reports(request):
+    """
+    Returns reports the current user has voted on, sorted by latest vote time.
+    """
+    user_id = get_user_id(request)
+    if user_id is None:
+        return JsonResponse({"error": "User not authenticated"}, status=401)
+
+    reports = (
+        Report.objects.filter(votes__user_id=user_id)
+        .annotate(vote_time=Max("votes__created_at"))
+        .order_by("-vote_time")
+    )
+
+    if not reports.exists():
+        return JsonResponse({"reports": []})
+
+    data = build_report_data(reports)
+    return JsonResponse({"reports": data})
+
+
+@require_GET
+@login_required
+def user_commented_reports(request):
+    """
+    Returns reports the current user has commented on, sorted by latest comment time.
+    """
+    user_id = get_user_id(request)
+    if user_id is None:
+        return JsonResponse({"error": "User not authenticated"}, status=401)
+
+    reports = (
+        Report.objects.filter(comments__user_id=user_id)
+        .annotate(last_commented=Max("comments__created_at"))
+        .order_by("-last_commented")
+    )
+
+    if not reports.exists():
+        return JsonResponse({"reports": []})
+
+    data = build_report_data(reports)
+    return JsonResponse({"reports": data})
 
 
 @login_required
@@ -196,6 +311,13 @@ def report_comments(request, report_id):
             body = json.loads(request.body.decode())
             user_id = body.get("user_id")
             content = body.get("content")
+
+            profanity_result = detect_profanity(content)
+            if profanity_result["is_toxic"]:
+                return JsonResponse({
+                    "error": "Your comment contains inappropriate language.",
+                    "score": profanity_result["score"]
+                }, status=400)
 
             # Ensure user_id and content are provided
             if not user_id or not content:
