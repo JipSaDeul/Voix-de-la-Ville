@@ -1,3 +1,4 @@
+{% load static %}
 <!-- templates/account/logout.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -6,13 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Out</title>
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
 </head>
 <body>
     <h1>Are you sure you want to sign out?</h1>
-    <form method="post" action="/accounts/logout/">  <!-- 直接使用路径 -->
+    <form method="post" action="/accounts/logout/">
         {% csrf_token %}
         <button type="submit">Sign Out</button>
+        <button onclick="window.history.back();" class="default-fallback-btn">No, go back</button>
     </form>
-    <button onclick="window.history.back();">No, go back</button>
 </body>
 </html>
