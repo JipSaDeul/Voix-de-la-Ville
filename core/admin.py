@@ -33,6 +33,18 @@ class UserAdmin(admin.ModelAdmin):
             return False
         return request.user.is_superuser
 
+    def get_deleted_objects(self, objs, request):
+        """
+        Override this method to skip permission checks for related objects.
+        """
+        # Call the parent method to get the list of objects to delete and permission requirements
+        deleted_objects, model_count, perms_needed, protected = super().get_deleted_objects(objs, request)
+
+        # Clear perms_needed to tell admin no permission check is needed for related objects
+        perms_needed.clear()
+
+        return deleted_objects, model_count, perms_needed, protected
+
 
 # READONLY
 @admin.register(ReportCategory)
