@@ -1,5 +1,10 @@
 {% extends "account/base_manage.html" %}
+{% load static %}
 {% load i18n %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+{% endblock %}
 
 {% block head_title %}
     {% trans "Email Addresses" %}

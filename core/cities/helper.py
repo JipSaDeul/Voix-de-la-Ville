@@ -1,8 +1,17 @@
 import sqlite3
+import math
 from pathlib import Path
 from typing import Final, List, Dict, Optional
 
 DB_PATH: Final = Path(__file__).resolve().parent / "cities.sqlite"
+
+def register_math_functions(conn: sqlite3.Connection):
+    conn.create_function("SQRT", 1, math.sqrt)
+    conn.create_function("POWER", 2, math.pow)
+    conn.create_function("SIN", 1, math.sin)
+    conn.create_function("COS", 1, math.cos)
+    conn.create_function("RADIANS", 1, math.radians)
+    conn.create_function("ASIN", 1, math.asin)
 
 
 def get_zipcode_by_location(lat: float, lon: float, max_km: float = 120.0) -> Optional[int]:
@@ -29,6 +38,7 @@ def get_zipcode_by_location(lat: float, lon: float, max_km: float = 120.0) -> Op
     params = [lat, lat, lon, lat, lat, lon, max_km]
 
     with sqlite3.connect(DB_PATH) as conn:
+        register_math_functions(conn)
         cursor = conn.cursor()
         cursor.execute(query, params)
         row = cursor.fetchone()
