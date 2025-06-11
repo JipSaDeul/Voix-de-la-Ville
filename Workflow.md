@@ -19,10 +19,10 @@
 
 ## Phase 3: Admin & Feedback (Week 3)
 
-- [ ] Django Admin setup: Staff can change report status  
-- [ ] Add status update notifications (email or frontend-polling)  
+- [x] Django Admin setup: Staff can change report status  
+- [x] Add status update notifications (email or frontend-polling)  
 - [x] Add moderation for comments (auto by AI, only avoiding profanity)  
-- [ ] API: municipal staff can comment via admin or frontend  
+- [x] API: municipal staff can comment via admin or frontend  
 - [ ] Map integration (using `leaflet.js` or `mapbox`): report locations on map  
 
 ## Phase 4: Polish & Deploy (Week 4)

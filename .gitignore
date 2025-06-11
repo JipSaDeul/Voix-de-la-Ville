@@ -12,7 +12,8 @@ staticfiles/
 *.log
 
 # Django migration files
-core/migrations/*_initial.py
+core/migrations/*.py
+!core/migrations/__init__.py
 
 # PyCharm/IDEA
 .idea/

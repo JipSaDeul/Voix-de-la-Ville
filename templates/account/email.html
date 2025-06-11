@@ -1,0 +1,46 @@
+{% extends "account/base_manage.html" %}
+{% load i18n %}
+
+{% block head_title %}
+    {% trans "Email Addresses" %}
+{% endblock %}
+
+{% block content %}
+    <a href="/">Back to Home</a>
+    <h1>{% trans "Email Addresses" %}</h1>
+
+    <p>{% trans "The following email addresses are associated with your account:" %}</p>
+
+    <form method="post" action="{% url 'account_email' %}">
+        {% csrf_token %}
+        {% for emailaddress in emailaddresses %}
+            <p>
+                <label>
+                    <input type="radio" name="email" value="{{ emailaddress.email }}"
+                           {% if emailaddress.primary %}checked{% endif %}>
+                    {{ emailaddress.email }}
+                    {% if emailaddress.verified %}<strong>(Verified)</strong>{% else %}
+                        <strong>(Unverified)</strong>{% endif %}
+                    {% if emailaddress.primary %}<strong>(Primary)</strong>{% endif %}
+                </label>
+            </p>
+        {% endfor %}
+
+        <button type="submit" name="action_primary">{% trans "Make Primary" %}</button>
+        <button type="submit" name="action_send">{% trans "Re-send Verification" %}</button>
+        <button type="submit" name="action_remove">{% trans "Remove" %}</button>
+    </form>
+
+    <hr>
+
+    <h2>{% trans "Add Email Address" %}</h2>
+
+    <form method="post" action="{% url 'account_email' %}">
+        {% csrf_token %}
+        <p>
+            <label for="id_email">{% trans "Email:" %}</label>
+            <input type="email" name="email" id="id_email" required placeholder="Enter new email">
+        </p>
+        <button type="submit" name="action_add">{% trans "Add Email" %}</button>
+    </form>
+{% endblock %}

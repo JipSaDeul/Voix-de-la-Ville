@@ -5,17 +5,18 @@ import os
 import uuid
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Q
 from django.http import JsonResponse, HttpResponseBadRequest, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_http_methods
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_http_methods
 
+from core.cities.helper import get_zipcode_by_location
 from core.utils import (get_user_id, create_vote, create_or_update_comment, nlp_categorize, auto_translate, \
                         build_report_data, detect_profanity)
-from .models import Report, Comment, ReportCategory
+from .models import Report, Comment, ReportCategory, AdminComment
 
 
 @login_required
@@ -78,8 +79,12 @@ def reports_list(request):
         title = data.get("title", "")
         description = data.get("description", "")
 
-        profanity_title = detect_profanity(title)
+        profanity_title = detect_profanity(title, 0.95)
         profanity_desc = detect_profanity(description)
+        latitude = data["latitude"]
+        longitude = data["longitude"]
+
+        zipcode = get_zipcode_by_location(latitude, longitude)
 
         if profanity_title["is_toxic"] or profanity_desc["is_toxic"]:
             return JsonResponse({
@@ -109,8 +114,9 @@ def reports_list(request):
             category=category,
             title=data["title"],
             description=data["description"],
-            latitude=data["latitude"],
-            longitude=data["longitude"],
+            latitude=latitude,
+            longitude=longitude,
+            zipcode=zipcode,
         )
 
         if image:
@@ -188,22 +194,31 @@ def user_voted_reports(request):
 def user_commented_reports(request):
     """
     Returns reports the current user has commented on, sorted by latest comment time.
+    Includes admin comments if the user is a superuser.
     """
-    user_id = get_user_id(request)
+    user = request.user
+    user_id = user.id
+
     if user_id is None:
         return JsonResponse({"error": "User not authenticated"}, status=401)
 
+    # Base Q: user comments
+    q = Q(comments__user_id=user_id)
+
+    # Add AdminComment only if user is superuser (admin)
+    if user.is_superuser:
+        q |= Q(admin_comments__admin_id=user_id)
+
     reports = (
-        Report.objects.filter(comments__user_id=user_id)
+        Report.objects.filter(q)
+        .distinct()
         .annotate(last_commented=Max("comments__created_at"))
         .order_by("-last_commented")
     )
-
     if not reports.exists():
         return JsonResponse({"reports": []})
 
-    data = build_report_data(reports)
-    return JsonResponse({"reports": data})
+    return JsonResponse({"reports": build_report_data(reports)})
 
 
 @login_required
@@ -257,13 +272,15 @@ def votes_create(request):
             # Parse the incoming JSON request data
             data = json.loads(request.body)
 
+            user_id = get_user_id(request)
+
             # Ensure that the necessary fields are present
-            if not isinstance(data.get("user_id"), int) or not isinstance(data.get("report_id"), int):
+            if user_id is None or not (data.get("report_id"), int):
                 raise TypeError("Invalid input types for 'user_id' or 'report_id'")
 
             # Call the create_vote utility function
             vote, created = create_vote(
-                user_id=data["user_id"],
+                user_id=user_id,
                 report_id=data["report_id"]
             )
 
@@ -293,23 +310,41 @@ def report_comments(request, report_id):
 
     if request.method == "GET":
         # Retrieve all comments for the report and return them
+        admin_comments = AdminComment.objects.filter(report=report).order_by("created_at")
+        admin_data = [
+            {
+                "id": c.id,
+                "user": c.admin_id,
+                "username": c.admin.username,
+                "is_admin": True,
+                "content": c.content,
+                "created_at": c.created_at,
+            }
+            for c in admin_comments
+        ]
+
         comments = Comment.objects.filter(report=report).order_by("created_at")
-        data = [
+        user_data = [
             {
                 "id": c.id,
                 "user": c.user_id,
+                "username": c.user.username,
+                "is_admin": False,
                 "content": c.content,
                 "created_at": c.created_at,
             }
             for c in comments
         ]
-        return JsonResponse({"comments": data})
+
+        all_data = admin_data + user_data
+
+        return JsonResponse({"comments": all_data})
 
     elif request.method == "POST":
         try:
             # Parse the incoming JSON data
             body = json.loads(request.body.decode())
-            user_id = body.get("user_id")
+            user_id = get_user_id(request)
             content = body.get("content")
 
             profanity_result = detect_profanity(content)

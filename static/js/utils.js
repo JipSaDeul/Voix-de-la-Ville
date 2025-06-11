@@ -29,37 +29,4 @@ function getUserLocation() {
     });
 }
 
-function reverseGeocode(lat, lon, lang = "en") {
-    // const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${lang}`;
-    //
-    // return fetch(url, {
-    //     headers: {
-    //         "User-Agent": "VoixApp/1.0 (your@email.com)"
-    //     }
-    // })
-    //     .then(res => {
-    //         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    //         return res.json();
-    //     })
-    //     .then(data => {
-    //         const {display_name, address} = data;
-    //         const addr = address || {};
-    //         const {city, village, country, town} = addr;
-    //         return {
-    //             city: city || town || village || "",
-    //             country: country || "",
-    //             display: display_name || ""
-    //         };
-    //     })
-    //     .catch(err => {
-    //         console.error("Reverse geocoding failed:", err);
-    //         return {city: "", country: "", display: ""};
-    //     });
-    return Promise.resolve({
-        city: `${lat}, ${lon}`,
-        country: "France",
-        display: `${lat}, ${lon}`
-    });
-}
-
-export {getUserLocation, reverseGeocode};
+export {getUserLocation};

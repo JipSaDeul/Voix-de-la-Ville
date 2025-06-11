@@ -1,0 +1,9 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h2>{{ title }}</h2>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save Comment" class="default">
+  </form>
+  <p><a href="../../{{ report.id }}/change/">Back to report</a></p>
+{% endblock %}

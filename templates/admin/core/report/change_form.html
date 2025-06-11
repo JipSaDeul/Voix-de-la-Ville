@@ -1,0 +1,8 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  {% if admin_comment_url %}
+    <a class="button" href="{{ admin_comment_url }}">📝 Add/Edit Admin Comment</a>
+  {% endif %}
+{% endblock %}

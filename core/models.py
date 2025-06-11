@@ -1,13 +1,38 @@
 # core.models
 
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+from core.managers import CustomUserManager
+
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
 
+    objects = CustomUserManager()
+
     def __str__(self):
         return self.username
+
+
+class Admin(User):
+    department = models.CharField(max_length=100, blank=True, null=True)
+
+    @classmethod
+    def from_user(cls, user):
+        return cls.objects.create(
+            id=user.pk,  # Ensure 1-to-1 ID mapping
+            username=user.username,
+            email=user.email,
+            password=user.password,  # Already hashed
+            is_staff=user.is_staff,
+            is_superuser=user.is_superuser,
+            is_active=user.is_active,
+        )
+
+    class Meta:
+        verbose_name = "Admin"
+        verbose_name_plural = "Admins"
 
 class ReportCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -15,6 +40,7 @@ class ReportCategory(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Report(models.Model):
     STATUS_CHOICES = [
@@ -28,6 +54,7 @@ class Report(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='report_images/', blank=True, null=True)
+    zipcode = models.IntegerField(null=True, blank=True, default=None)
     latitude = models.FloatField()
     longitude = models.FloatField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -35,6 +62,7 @@ class Report(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Vote(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -44,6 +72,7 @@ class Vote(models.Model):
     class Meta:
         unique_together = ('user', 'report')
 
+
 class Comment(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='comments')
@@ -52,3 +81,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.report.title}'
+
+
+class AdminComment(models.Model):
+    admin = models.ForeignKey('Admin', on_delete=models.CASCADE)
+    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='admin_comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'AdminComment by {self.admin.username} on {self.report.title}'

@@ -7,7 +7,8 @@ from django.http import HttpRequest
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 from langdetect import DetectorFactory, detect_langs, LangDetectException
 
-from .models import Comment, Vote
+from .cities.helper import get_city_info_by_zipcodes
+from .models import Comment, Vote, AdminComment
 
 """
 Models Related
@@ -54,6 +55,31 @@ def create_or_update_comment(user_id: int, report_id: int, content: str) -> Tupl
         return None, False
 
 
+def create_or_update_admin_comment(admin_id: int, report_id: int, content: str) -> Tuple[Optional[AdminComment], bool]:
+    """
+    Create or update an admin comment on a specific report.
+    If an admin comment already exists for this admin and report, update it.
+
+    :param admin_id: The ID of the admin (Django auth user).
+    :param report_id: The ID of the report.
+    :param content: The comment content.
+    :return: Tuple of (AdminComment object or None, is_created: bool)
+    """
+    try:
+        if not isinstance(admin_id, int) or not isinstance(report_id, int) or not isinstance(content, str):
+            raise TypeError("Invalid input type")
+
+        comment, created = AdminComment.objects.update_or_create(
+            admin_id=admin_id,
+            report_id=report_id,
+            defaults={"content": content}
+        )
+        return comment, created
+
+    except TypeError:
+        return None, False
+
+
 def create_vote(user_id: int, report_id: int) -> Tuple[Optional[Vote], bool]:
     """
     Create a vote for a user on a specific report.
@@ -79,28 +105,40 @@ def create_vote(user_id: int, report_id: int) -> Tuple[Optional[Vote], bool]:
 
 def build_report_data(reports):
     """
-    Helper function to build data for each report including vote count and related fields.
+    Build data for each report including vote count and city info from zipcode.
 
     :param reports: A queryset of Report objects.
     :return: A list of dictionaries containing the report details.
     """
     data = []
+
+    # Collect unique zipcodes
+    zipcodes = list({r.zipcode for r in reports if r.zipcode is not None})
+
+    # Build a mapping from zipcode -> city info
+    zipcode_info_map = {
+        str(item["zipcode"]): item
+        for item in get_city_info_by_zipcodes(zipcodes)
+    }
+
     for r in reports:
-        # Get vote count either from annotate or manually
         vote_count = r.vote_count if hasattr(r, 'vote_count') else Vote.objects.filter(report=r).count()
+
+        z_info = zipcode_info_map.get(str(r.zipcode), {"zipcode": "/", "place": "/", "province": "Out seas"})
 
         data.append({
             "id": r.id,
             "title": r.title,
             "description": r.description,
-            "vote_count": vote_count,  # Handle vote count
+            "vote_count": vote_count,
             "status": r.status,
-            "latitude": round(r.latitude, 4),
-            "longitude": round(r.longitude, 4),
-            "image_url": r.image.url if r.image else None,  # Check if image exists
-            "category": r.category.name if r.category else None,  # Access related category name
-            "user_email": r.user.email if r.user else None,  # Access related user's email
-            "user_name": r.user.username if r.user else None,  # Access related user's username
+            "zipcode": z_info["zipcode"],
+            "place": z_info["place"],
+            "province": z_info["province"],
+            "image_url": r.image.url if r.image else None,
+            "category": r.category.name if r.category else None,
+            "user_email": r.user.email if r.user else None,
+            "user_name": r.user.username if r.user else None,
             "created_at": r.created_at,
         })
     return data
@@ -170,6 +208,45 @@ def to_eng(text: str) -> str:
     return text
 
 
+categories = {
+    "infrastructure": {
+        "name": "Infrastructure",
+        "description": "Issues related to roads, streets, sidewalks, and other infrastructure concerns.",
+        "keywords": ["road", "street", "sidewalk", "pothole", "repair", "construction"]
+    },
+    "environment": {
+        "name": "Environment",
+        "description": "Concerns related to noise, pollution, cleanliness, and the environment.",
+        "keywords": ["noise", "sound", "pollution", "clean", "garbage", "smell", "dust", "cleanliness"]
+    },
+    "traffic": {
+        "name": "Traffic",
+        "description": "Traffic-related issues such as congestion, parking, and traffic signals.",
+        "keywords": ["traffic", "signal", "congestion", "parking", "bus", "car", "bus stop", "traffic jam"]
+    },
+    "security": {
+        "name": "Security",
+        "description": "Security-related issues like crime, theft, and vandalism.",
+        "keywords": ["theft", "crime", "robbery", "assault", "security", "police", "danger", "vandalism"]
+    },
+    "public_service": {
+        "name": "Public Service",
+        "description": "Issues regarding public services like water, electricity, and emergency services.",
+        "keywords": ["water", "electricity", "sewer", "fire", "service", "maintenance", "emergency"]
+    },
+    "health": {
+        "name": "Health",
+        "description": "Health-related issues such as disease, sanitation, and medical services.",
+        "keywords": ["health", "hospital", "doctor", "sanitation", "disease", "cleanliness", "infection"]
+    },
+    "other": {
+        "name": "Other",
+        "description": "Any issue that doesn't fall under the standard categories.",
+        "keywords": []
+    }
+}
+
+
 def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
     text_en = to_eng(text).strip()
     if not text_en:
@@ -177,52 +254,16 @@ def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
 
     doc = nlp(text_en)
 
+    print(doc)
     # Nonsense
     meaningful_tokens = [
         t for t in doc
-        if t.is_alpha and len(t.text) > 2 and not t.is_oov
+        if t.is_alpha and len(t.text) > 2 and t.has_vector
     ]
+    print(meaningful_tokens)
 
     if len(meaningful_tokens) < 1:
         return None
-
-    categories = {
-        "infrastructure": {
-            "name": "Infrastructure",
-            "description": "Issues related to roads, streets, sidewalks, and other infrastructure concerns.",
-            "keywords": ["road", "street", "sidewalk", "pothole", "repair", "construction"]
-        },
-        "environment": {
-            "name": "Environment",
-            "description": "Concerns related to noise, pollution, cleanliness, and the environment.",
-            "keywords": ["noise", "sound", "pollution", "clean", "garbage", "smell", "dust", "cleanliness"]
-        },
-        "traffic": {
-            "name": "Traffic",
-            "description": "Traffic-related issues such as congestion, parking, and traffic signals.",
-            "keywords": ["traffic", "signal", "congestion", "parking", "bus", "car", "bus stop", "traffic jam"]
-        },
-        "security": {
-            "name": "Security",
-            "description": "Security-related issues like crime, theft, and vandalism.",
-            "keywords": ["theft", "crime", "robbery", "assault", "security", "police", "danger", "vandalism"]
-        },
-        "public_service": {
-            "name": "Public Service",
-            "description": "Issues regarding public services like water, electricity, and emergency services.",
-            "keywords": ["water", "electricity", "sewer", "fire", "service", "maintenance", "emergency"]
-        },
-        "health": {
-            "name": "Health",
-            "description": "Health-related issues such as disease, sanitation, and medical services.",
-            "keywords": ["health", "hospital", "doctor", "sanitation", "disease", "cleanliness", "infection"]
-        },
-        "other": {
-            "name": "Other",
-            "description": "Any issue that doesn't fall under the standard categories.",
-            "keywords": []
-        }
-    }
 
     counts = {key: 0 for key in categories}
     for token in meaningful_tokens:
@@ -240,7 +281,7 @@ def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
     }
 
 
-def detect_profanity(text: str, threshold: float = 0.6) -> Dict[str, object]:
+def detect_profanity(text: str, threshold: float = 0.8) -> Dict[str, object]:
     """
     Detects whether the input text contains offensive or toxic language.
     Handles language detection and automatic translation before classification.

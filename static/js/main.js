@@ -1,4 +1,4 @@
-import {getUserLocation, reverseGeocode} from "./utils.js";
+import {getUserLocation} from "./utils.js";
 
 const userLang = window.APP_CONFIG.userLang;
 const categoryMap = {};
@@ -122,7 +122,21 @@ function loadSection(url, containerId) {
 function renderReport(report, container) {
     const div = document.createElement("div");
 
-    const {id, title, description, vote_count, status, image_url, category, user_name, user_email, created_at} = report;
+    const {
+        id,
+        title,
+        description,
+        vote_count,
+        status,
+        image_url,
+        category,
+        user_name,
+        user_email,
+        created_at,
+        zipcode,
+        province,
+        place
+    } = report;
 
     // Title
     const titleEl = document.createElement("h3");
@@ -183,12 +197,15 @@ function renderReport(report, container) {
     });
     div.appendChild(voteBtn);
 
-    // GenCode
-    reverseGeocode(report.latitude, report.longitude, userLang).then(loc => {
-        const locEl = document.createElement("p");
-        locEl.textContent = `📍 ${loc.city}, ${loc.country}`;
-        div.appendChild(locEl);
-    });
+    // City Code
+    const locEl = document.createElement("p");
+    if (zipcode.length === 0 || zipcode === "/") {
+        locEl.textContent = `📍 ${userLang === "fr" ? "outre-mer" : "overseas"}`;
+    } else {
+        locEl.textContent = `📍 ${place}[${zipcode}], ${province}`;
+    }
+
+    div.appendChild(locEl);
 
 
     // Comment
@@ -242,19 +259,50 @@ function loadComments(reportId) {
     fetch(`/api/reports/${reportId}/comments/`)
         .then(res => res.json())
         .then(data => {
-            const container = document.getElementById(`comments-${reportId}`);
-            container.innerHTML = "";
             const {comments} = data;
-            (comments || []).forEach(c => {
-                const p = document.createElement("p");
-                p.textContent = `User ${c.user}: ${c.content}`;
-                container.appendChild(p);
-            });
+            renderComments(reportId, comments);
         })
         .catch(err => {
             console.error("Failed to fetch:", err);
         });
 }
+
+function renderComments(reportId, comments) {
+    const container = document.getElementById(`comments-${reportId}`);
+    container.innerHTML = "";
+
+    const previewCount = 4;
+    const visible = comments.slice(0, previewCount);
+    const hidden = comments.slice(previewCount);
+
+    visible.forEach(c => container.appendChild(createCommentElement(c)));
+
+    const hiddenDiv = document.createElement("div");
+    hiddenDiv.style.display = "none";
+    hidden.forEach(c => hiddenDiv.appendChild(createCommentElement(c)));
+    container.appendChild(hiddenDiv);
+
+    if (hidden.length > 0) {
+        const toggle = document.createElement("button");
+        toggle.textContent = "Show all comments";
+        toggle.addEventListener("click", () => {
+            const expanded = hiddenDiv.style.display === "block";
+            hiddenDiv.style.display = expanded ? "none" : "block";
+            toggle.textContent = expanded ? "Show all comments" : "Hide extra comments";
+        });
+        container.appendChild(toggle);
+    }
+}
+
+function createCommentElement(c) {
+    const p = document.createElement("p");
+    const {username, is_admin, content} = c;
+    p.className = is_admin ? "admin-comment" : "user-comment";
+    p.textContent = `User ${username}: ${content}`;
+    return p;
+}
+
+
 
 function submitNewReport() {
     const title = document.getElementById("new-title").value.trim();
