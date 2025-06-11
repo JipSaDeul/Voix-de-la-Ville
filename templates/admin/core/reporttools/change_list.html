@@ -1,0 +1,47 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Custom ReportTools Admin Page</h1>
+
+<p>This is your completely customized admin list page for ReportTools.</p>
+
+<form method="post" action="">
+  {% csrf_token %}
+  <label for="zipcode-input">Search by Zipcode:</label>
+  <input id="zipcode-input" name="zipcode" type="text" placeholder="Enter zipcode">
+  <button type="submit">Search</button>
+</form>
+
+{% if reports %}
+  <h2>Search Results:</h2>
+  <table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>User</th>
+      <th>Votes</th>
+      <th>Status</th>
+      <th>Created At</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for report in reports %}
+    <tr>
+      <td><a href="{% url 'admin:core_report_change' report.id %}">{{ report.title }}</a></td>
+      <td>{{ report.user }}</td>
+      <td>{{ report.vote_count }}</td>
+      <td>{{ report.status }}</td>
+      <td>{{ report.created_at }}</td>
+      <td>
+        <a href="{% url 'admin:core_report_change' report.id %}">Edit</a> |
+        <a href="{% url 'admin:core_report_delete' report.id %}">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+{% endblock %}

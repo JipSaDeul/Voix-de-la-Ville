@@ -91,3 +91,9 @@ class AdminComment(models.Model):
 
     def __str__(self):
         return f'AdminComment by {self.admin.username} on {self.report.title}'
+
+class ReportTools(models.Model):
+    class Meta:
+        managed = False
+        verbose_name = 'Report Search'
+        verbose_name_plural = 'Report Search'
