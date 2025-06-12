@@ -23,11 +23,11 @@
 - [x] Add status update notifications (email or frontend-polling)  
 - [x] Add moderation for comments (auto by AI, only avoiding profanity)  
 - [x] API: municipal staff can comment via admin or frontend  
-- [ ] Map integration (using `leaflet.js` or `mapbox`): report locations on map  
+- [ ] ~~Map integration (using `leaflet.js` or `mapbox`): report locations on map~~  
 
 ## Phase 4: Polish & Deploy (Week 4)
 
-- [ ] Frontend UI: simple mobile-first UI using React/Next.js or template  
-- [ ] Translate UI strings (i18n: French, English)  
-- [ ] Test workflows: report creation → NLP → admin view → resolution  
+- [x] Frontend UI: simple mobile-first UI ~~using React/Next.js or template~~  
+- [x] Translate UI strings (i18n: French, English)  
+- [x] Test workflows: report creation → NLP → admin view → resolution  
 - [ ] Deploy with Docker (optional), SQLite/PostgreSQL + static file handling

@@ -1,0 +1,435 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-12 12:02+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: core/admin.py:133
+msgid "City Info"
+msgstr "위치"
+
+#: core/admin.py:201 core/admin.py:223 core/models.py:114 core/models.py:128
+#: core/models.py:151 core/models.py:177
+msgid "Report"
+msgstr "신고"
+
+#: core/models.py:35 core/models.py:171
+msgid "Admin"
+msgstr "관리자"
+
+#: core/models.py:36
+msgid "Admins"
+msgstr "관리자"
+
+#: core/models.py:43
+msgid "Category Name"
+msgstr "분류"
+
+#: core/models.py:47 core/models.py:83 templates/home.html:72
+#: templates/home.html:73
+msgid "Description"
+msgstr "설명"
+
+#: core/models.py:54
+msgid "Report Category"
+msgstr "신고 류형"
+
+#: core/models.py:55
+msgid "Report Categories"
+msgstr "신고 류형"
+
+#: core/models.py:60
+msgid "Pending"
+msgstr "승인 대기"
+
+#: core/models.py:61
+msgid "In Progress"
+msgstr "진행 중"
+
+#: core/models.py:62
+msgid "Resolved"
+msgstr "해결됨"
+
+#: core/models.py:63
+msgid "Rejected"
+msgstr "거절됨"
+
+#: core/models.py:69 core/models.py:122 core/models.py:145
+#: templates/admin/core/reporttools/change_list.html:23
+msgid "User"
+msgstr "사용자"
+
+#: core/models.py:76 templates/home.html:91
+msgid "Category"
+msgstr "류형"
+
+#: core/models.py:80 templates/admin/core/reporttools/change_list.html:22
+#: templates/home.html:69 templates/home.html:70
+msgid "Title"
+msgstr "표제"
+
+#: core/models.py:89
+msgid "Image"
+msgstr "Image [사진]"
+
+#: core/models.py:95
+msgid "Zip Code"
+msgstr "우정편호"
+
+#: core/models.py:97
+msgid "Latitude"
+msgstr "위도"
+
+#: core/models.py:98
+msgid "Longitude"
+msgstr "경도"
+
+#: core/models.py:103 templates/admin/core/reporttools/change_list.html:25
+#: templates/home.html:92
+msgid "Status"
+msgstr "상태"
+
+#: core/models.py:107 core/models.py:132 core/models.py:156 core/models.py:182
+#: templates/admin/core/reporttools/change_list.html:26
+msgid "Created At"
+msgstr "작성 시간"
+
+#: core/models.py:115
+msgid "Reports"
+msgstr "신고 기록"
+
+#: core/models.py:137 templates/home.html:88
+msgid "Vote"
+msgstr "투표"
+
+#: core/models.py:138 templates/admin/core/reporttools/change_list.html:24
+msgid "Votes"
+msgstr "투표 기록"
+
+#: core/models.py:153 core/models.py:179
+msgid "Content"
+msgstr "내용"
+
+#: core/models.py:163
+msgid "Comment"
+msgstr "의견"
+
+#: core/models.py:164
+msgid "Comments"
+msgstr "의견 목록"
+
+#: core/models.py:189
+msgid "Admin Comment"
+msgstr "관리자의 평가"
+
+#: core/models.py:190
+msgid "Admin Comments"
+msgstr "관리자의 평가"
+
+#: core/models.py:196 core/models.py:197
+msgid "Report Search"
+msgstr "신고 검색"
+
+#: templates/account/email.html:12 templates/account/email.html:17
+msgid "Email Addresses"
+msgstr "전자우편"
+
+#: templates/account/email.html:16
+msgid "Back to Home"
+msgstr "첫 쪽으로 돌아가기"
+
+#: templates/account/email.html:19
+msgid "The following email addresses are associated with your account:"
+msgstr "다음 전자우편들은 당신의 계정과 관련되어 있습니다:"
+
+#: templates/account/email.html:36
+msgid "Make Primary"
+msgstr "우선 전자우편으로 지정"
+
+#: templates/account/email.html:37
+msgid "Re-send Verification"
+msgstr "확인 다시 보내기"
+
+#: templates/account/email.html:38
+msgid "Remove"
+msgstr "삭제"
+
+#: templates/account/email.html:43
+msgid "Add Email Address"
+msgstr "전자우편 추가"
+
+#: templates/account/email.html:48
+msgid "Email:"
+msgstr "전자우편:"
+
+#: templates/account/email.html:51
+msgid "Add Email"
+msgstr "전자우편 추가"
+
+#: templates/account/login.html:7 templates/account/login.html:16
+#: templates/account/signup.html:22
+msgid "Login"
+msgstr "인증"
+
+#: templates/account/login.html:11
+msgid "Login Page"
+msgstr "인증 쪽"
+
+#: templates/account/login.html:19
+msgid "No login form available."
+msgstr "인증 양식이 없습니다."
+
+#: templates/account/login.html:23
+msgid "Don't have an account?"
+msgstr "계정이 없습니까?"
+
+#: templates/account/login.html:23 templates/account/signup.html:7
+#: templates/account/signup.html:16
+msgid "Sign Up"
+msgstr "새 계정 만들기"
+
+#: templates/account/logout.html:14
+msgid "Are you sure you want to sign out?"
+msgstr "인증을 끝내시겠습니까?"
+
+#: templates/account/logout.html:17
+msgid "Sign Out"
+msgstr "인증 끝내기"
+
+#: templates/account/logout.html:18
+msgid "No, Back to Homepage"
+msgstr "첫 쪽으로 돌아가기"
+
+#: templates/account/signup.html:11
+msgid "Sign Up Page"
+msgstr "등록 쪽"
+
+#: templates/account/signup.html:19
+msgid "No signup form available."
+msgstr "등록 양식이 없습니다."
+
+#: templates/account/signup.html:22
+msgid "Already have an account?"
+msgstr "계정을 가진 적이 있습니까?"
+
+#: templates/admin/add_admin_comment.html:8
+msgid "Save Comment"
+msgstr "의견은 제출하기"
+
+#: templates/admin/add_admin_comment.html:10
+msgid "Back to report"
+msgstr "신고 쪽으로 돌아가기"
+
+#: templates/admin/base.html:29
+msgid "Skip to main content"
+msgstr "주된 내용으로 건너뛰기"
+
+#: templates/admin/core/report/change_form.html:7
+msgid "Add/Edit Admin Comment"
+msgstr "추가/편집 관리자의 평가"
+
+#: templates/admin/core/reporttools/change_list.html:6
+msgid "Reports Searching"
+msgstr "신고 검색"
+
+#: templates/admin/core/reporttools/change_list.html:8
+msgid "Enter a Zipcode to search for related reports."
+msgstr "우정편호를 입력하면 관련 신고서를 검색할 수 있습니다."
+
+#: templates/admin/core/reporttools/change_list.html:12
+msgid "Zipcode"
+msgstr "우정편호"
+
+#: templates/admin/core/reporttools/change_list.html:14
+#| msgid "Report Search"
+msgid "Search"
+msgstr "검색하기"
+
+#: templates/admin/core/reporttools/change_list.html:18
+msgid "Search Results"
+msgstr "검색 결과"
+
+#: templates/admin/core/reporttools/change_list.html:27
+msgid "Actions"
+msgstr "조치"
+
+#: templates/admin/core/reporttools/change_list.html:39
+msgid "Edit"
+msgstr "편집"
+
+#: templates/admin/core/reporttools/change_list.html:40
+msgid "Delete"
+msgstr "삭제"
+
+#: templates/admin/login.html:22
+msgid ""
+"\n"
+"                Please correct the error below.\n"
+"            "
+msgstr ""
+"\n"
+"                아래 오류를 갱정하십시오.\n"
+"            "
+
+#: templates/admin/login.html:39
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"당신은 %(username)s으로 인증되였지만 이 쪽을 열람할 권한이 없습니다. 다른 계"
+"정으로 인증하시겠습니까?"
+
+#: templates/admin/login.html:61
+msgid "Forgotten your login credentials?"
+msgstr "인증의 비밀번호를 잊으셨습니까?"
+
+#: templates/admin/login.html:66
+msgid "Log in"
+msgstr "인증하기"
+
+#: templates/home.html:20
+msgid "Welcome to the Home Page"
+msgstr "이 봉사에 오신 것을 환영합니다"
+
+#: templates/home.html:21
+#, python-format
+msgid ""
+"\n"
+"            Welcome, %(username)s\n"
+"        "
+msgstr ""
+"\n"
+"            %(username)s씨, 환영합니다, 안녕하십니까?\n"
+"        "
+
+#: templates/home.html:24
+msgid "Your Account"
+msgstr "당신의 계정"
+
+#: templates/home.html:25
+msgid "Logout"
+msgstr "인증 끝내기"
+
+#: templates/home.html:29 templates/home.html:37
+msgid "All Reports"
+msgstr "전체 신고"
+
+#: templates/home.html:30
+msgid "My Activities"
+msgstr "참여한 신고들"
+
+#: templates/home.html:31 templates/home.html:67
+msgid "New Report"
+msgstr "신고하기"
+
+#: templates/home.html:41
+msgid "Filter by category"
+msgstr "분류 기준 선택"
+
+#: templates/home.html:43
+msgid "All"
+msgstr "전체"
+
+#: templates/home.html:48
+msgid "Number of reports"
+msgstr "신고 개수"
+
+#: templates/home.html:58
+msgid "My Reports"
+msgstr "내 신고"
+
+#: templates/home.html:60
+msgid "My Votes"
+msgstr "내가 투표한 신고"
+
+#: templates/home.html:62
+msgid "My Comments"
+msgstr "내가 의견 남긴 신고"
+
+#: templates/home.html:75
+msgid "Image (optional)"
+msgstr "Image [사진] (선택 사항)"
+
+#: templates/home.html:78
+msgid "Submit"
+msgstr "보내기"
+
+#: templates/home.html:89
+msgid "Submit Comment"
+msgstr "의견 보냄"
+
+#: templates/home.html:90
+msgid "Write a comment"
+msgstr "의견을 남기십시오"
+
+#: templates/home.html:93
+msgid "Reported by"
+msgstr "신고자"
+
+#: templates/home.html:94
+msgid "Created at"
+msgstr "작성 시간"
+
+#: templates/home.html:95
+msgid "Show all comments"
+msgstr "의견 전체 보기"
+
+#: templates/home.html:96
+msgid "Hide extra comments"
+msgstr "나머지 의견 감추기"
+
+#: templates/home.html:97
+msgid "Please fill in both title and description."
+msgstr "표제와 설명을 다 적어주십시오."
+
+#: templates/home.html:98
+msgid "Only JPG and PNG images are allowed."
+msgstr "JPG 및 PNG Image 만 가능합니다."
+
+#: templates/home.html:99
+msgid "Image must be smaller than 2MB."
+msgstr "Image은 2MB보다 작아야 합니다."
+
+#: templates/home.html:100
+msgid "Report submitted successfully!"
+msgstr "신고가 성공적으로 보내졌습니다!"
+
+#: templates/home.html:101
+msgid "Error"
+msgstr "오류"
+
+#: templates/home.html:102
+msgid "Network error"
+msgstr "망 오류"
+
+#: templates/home.html:103
+msgid "overseas"
+msgstr "해외"
+
+#: templates/home.html:104
+msgid "Report Image"
+msgstr "신고 Image [사진]"
+
+# overwrite some django's default seoul-style expressions
+msgid "Username"
+msgstr "사용자의 이름"
+
+msgid "Remember Me"
+msgstr "인증상태 저장"
+
+msgid "Email address"
+msgstr "전자우편"

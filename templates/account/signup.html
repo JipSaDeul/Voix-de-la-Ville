@@ -1,23 +1,24 @@
 {% load static %}
+{% load i18n %}
 <!-- templates/account/signup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sign Up</title>
+    <title>{% trans 'Sign Up' %}</title>
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
 </head>
 <body>
-    <h2>Sign Up Page</h2>
+    <h2>{% trans "Sign Up Page" %}</h2>
     {% if form %}
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Sign Up</button>
+            <button type="submit">{% trans "Sign Up" %}</button>
         </form>
     {% else %}
-        <p>No signup form available.</p>
+        <p>{% trans "No signup form available." %}</p>
     {% endif %}
     
-    <p>Already have an account? <a href="/accounts/login">Login</a></p>
+    <p>{% trans "Already have an account?" %} <a href="/accounts/login">{% trans "Login" %}</a></p>
 </body>
 </html>

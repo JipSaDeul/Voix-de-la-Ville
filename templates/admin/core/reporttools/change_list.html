@@ -1,29 +1,30 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
-
+{% load i18n %}
+<!-- templates/admin/change_list.html -->
 {% block content %}
-<h1>Custom ReportTools Admin Page</h1>
+<h1>{% trans 'Reports Searching' %}</h1>
 
-<p>This is your completely customized admin list page for ReportTools.</p>
+<p>{% trans 'Enter a Zipcode to search for related reports.' %}</p>
 
 <form method="post" action="">
   {% csrf_token %}
-  <label for="zipcode-input">Search by Zipcode:</label>
+  <label for="zipcode-input">{% trans 'Zipcode' %}:</label>
   <input id="zipcode-input" name="zipcode" type="text" placeholder="Enter zipcode">
-  <button type="submit">Search</button>
+  <button type="submit">{% trans 'Search' %}</button>
 </form>
 
 {% if reports %}
-  <h2>Search Results:</h2>
+  <h2>{% trans 'Search Results' %}:</h2>
   <table>
   <thead>
     <tr>
-      <th>Title</th>
-      <th>User</th>
-      <th>Votes</th>
-      <th>Status</th>
-      <th>Created At</th>
-      <th>Actions</th>
+      <th>{% trans 'Title' %}</th>
+      <th>{% trans 'User' %}</th>
+      <th>{% trans 'Votes' %}</th>
+      <th>{% trans 'Status' %}</th>
+      <th>{% trans 'Created At' %}</th>
+      <th>{% trans 'Actions' %}</th>
     </tr>
   </thead>
   <tbody>
@@ -35,8 +36,8 @@
       <td>{{ report.status }}</td>
       <td>{{ report.created_at }}</td>
       <td>
-        <a href="{% url 'admin:core_report_change' report.id %}">Edit</a> |
-        <a href="{% url 'admin:core_report_delete' report.id %}">Delete</a>
+        <a href="{% url 'admin:core_report_change' report.id %}">{% trans 'Edit' %}</a> |
+        <a href="{% url 'admin:core_report_delete' report.id %}">{% trans 'Delete' %}</a>
       </td>
     </tr>
     {% endfor %}

@@ -1,0 +1,426 @@
+# French translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-12 12:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: fr <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: core/admin.py:133
+msgid "City Info"
+msgstr "Informations géographiques"
+
+#: core/admin.py:201 core/admin.py:223 core/models.py:114 core/models.py:128
+#: core/models.py:151 core/models.py:177
+msgid "Report"
+msgstr "Rapport"
+
+#: core/models.py:35 core/models.py:171
+msgid "Admin"
+msgstr "Administrateur"
+
+#: core/models.py:36
+msgid "Admins"
+msgstr "Administrateurs"
+
+#: core/models.py:43
+msgid "Category Name"
+msgstr "Nom de la catégorie"
+
+#: core/models.py:47 core/models.py:83 templates/home.html:72
+#: templates/home.html:73
+msgid "Description"
+msgstr "Description"
+
+#: core/models.py:54
+msgid "Report Category"
+msgstr "Catégorie de rapport"
+
+#: core/models.py:55
+msgid "Report Categories"
+msgstr "Catégories de rapport"
+
+#: core/models.py:60
+msgid "Pending"
+msgstr "En attente"
+
+#: core/models.py:61
+msgid "In Progress"
+msgstr "En cours"
+
+#: core/models.py:62
+msgid "Resolved"
+msgstr "Résolu"
+
+#: core/models.py:63
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: core/models.py:69 core/models.py:122 core/models.py:145
+#: templates/admin/core/reporttools/change_list.html:23
+msgid "User"
+msgstr "Utilisateur"
+
+#: core/models.py:76 templates/home.html:91
+msgid "Category"
+msgstr "Catégorie"
+
+#: core/models.py:80 templates/admin/core/reporttools/change_list.html:22
+#: templates/home.html:69 templates/home.html:70
+msgid "Title"
+msgstr "Titre"
+
+#: core/models.py:89
+msgid "Image"
+msgstr "Image"
+
+#: core/models.py:95
+msgid "Zip Code"
+msgstr "Code postal"
+
+#: core/models.py:97
+msgid "Latitude"
+msgstr "Latitude"
+
+#: core/models.py:98
+msgid "Longitude"
+msgstr "Longitude"
+
+#: core/models.py:103 templates/admin/core/reporttools/change_list.html:25
+#: templates/home.html:92
+msgid "Status"
+msgstr "Statut"
+
+#: core/models.py:107 core/models.py:132 core/models.py:156 core/models.py:182
+#: templates/admin/core/reporttools/change_list.html:26
+msgid "Created At"
+msgstr "Créé le"
+
+#: core/models.py:115
+msgid "Reports"
+msgstr "Rapports"
+
+#: core/models.py:137 templates/home.html:88
+msgid "Vote"
+msgstr "Vote"
+
+#: core/models.py:138 templates/admin/core/reporttools/change_list.html:24
+msgid "Votes"
+msgstr "Votes"
+
+#: core/models.py:153 core/models.py:179
+msgid "Content"
+msgstr "Contenu"
+
+#: core/models.py:163
+msgid "Comment"
+msgstr "Commentaire"
+
+#: core/models.py:164
+msgid "Comments"
+msgstr "Commentaires"
+
+#: core/models.py:189
+msgid "Admin Comment"
+msgstr "Commentaire de l'administrateur"
+
+#: core/models.py:190
+msgid "Admin Comments"
+msgstr "Commentaires de l'administrateur"
+
+#: core/models.py:196 core/models.py:197
+msgid "Report Search"
+msgstr "Recherche de rapport"
+
+#: templates/account/email.html:12 templates/account/email.html:17
+msgid "Email Addresses"
+msgstr "Adresses e-mail"
+
+#: templates/account/email.html:16
+msgid "Back to Home"
+msgstr "Retour à l'accueil"
+
+#: templates/account/email.html:19
+msgid "The following email addresses are associated with your account:"
+msgstr "Les adresses e-mail suivantes sont associées à votre compte :"
+
+#: templates/account/email.html:36
+msgid "Make Primary"
+msgstr "Définir comme principal"
+
+#: templates/account/email.html:37
+msgid "Re-send Verification"
+msgstr "Renvoyer la vérification"
+
+#: templates/account/email.html:38
+msgid "Remove"
+msgstr "Supprimer"
+
+#: templates/account/email.html:43
+msgid "Add Email Address"
+msgstr "Ajouter une adresse e-mail"
+
+#: templates/account/email.html:48
+msgid "Email:"
+msgstr "E-mail :"
+
+#: templates/account/email.html:51
+msgid "Add Email"
+msgstr "Ajouter l'e-mail"
+
+#: templates/account/login.html:7 templates/account/login.html:16
+#: templates/account/signup.html:22
+msgid "Login"
+msgstr "Connexion"
+
+#: templates/account/login.html:11
+msgid "Login Page"
+msgstr "Page de connexion"
+
+#: templates/account/login.html:19
+msgid "No login form available."
+msgstr "Aucun formulaire de connexion disponible."
+
+#: templates/account/login.html:23
+msgid "Don't have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+#: templates/account/login.html:23 templates/account/signup.html:7
+#: templates/account/signup.html:16
+msgid "Sign Up"
+msgstr "S'inscrire"
+
+#: templates/account/logout.html:14
+msgid "Are you sure you want to sign out?"
+msgstr "Êtes-vous sûr de vouloir vous déconnecter ?"
+
+#: templates/account/logout.html:17
+msgid "Sign Out"
+msgstr "Déconnexion"
+
+#: templates/account/logout.html:18
+msgid "No, Back to Homepage"
+msgstr "Non, retour à l'accueil"
+
+#: templates/account/signup.html:11
+msgid "Sign Up Page"
+msgstr "Page d'inscription"
+
+#: templates/account/signup.html:19
+msgid "No signup form available."
+msgstr "Aucun formulaire d'inscription disponible."
+
+#: templates/account/signup.html:22
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+#: templates/admin/add_admin_comment.html:8
+msgid "Save Comment"
+msgstr "Enregistrer le commentaire"
+
+#: templates/admin/add_admin_comment.html:10
+msgid "Back to report"
+msgstr "Retour au rapport"
+
+#: templates/admin/base.html:29
+msgid "Skip to main content"
+msgstr "Passer au contenu principal"
+
+#: templates/admin/core/report/change_form.html:7
+msgid "Add/Edit Admin Comment"
+msgstr "Ajouter/Modifier un commentaire administrateur"
+
+#: templates/admin/core/reporttools/change_list.html:6
+msgid "Reports Searching"
+msgstr "Recherche de rapports"
+
+#: templates/admin/core/reporttools/change_list.html:8
+msgid "Enter a Zipcode to search for related reports."
+msgstr "Saisissez un code postal pour rechercher des rapports associés."
+
+#: templates/admin/core/reporttools/change_list.html:12
+msgid "Zipcode"
+msgstr "Code postal"
+
+#: templates/admin/core/reporttools/change_list.html:14
+msgid "Search"
+msgstr "Rechercher"
+
+#: templates/admin/core/reporttools/change_list.html:18
+msgid "Search Results"
+msgstr "Résultats de la recherche"
+
+#: templates/admin/core/reporttools/change_list.html:27
+msgid "Actions"
+msgstr "Actions"
+
+#: templates/admin/core/reporttools/change_list.html:39
+msgid "Edit"
+msgstr "Modifier"
+
+#: templates/admin/core/reporttools/change_list.html:40
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/admin/login.html:22
+msgid ""
+"\n"
+"                Please correct the error below.\n"
+"            "
+msgstr ""
+"\n"
+"                Veuillez corriger l'erreur ci-dessous.\n"
+"            "
+
+#: templates/admin/login.html:39
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"Vous êtes connecté en tant que %(username)s, mais vous n'êtes pas autorisé à "
+"accéder à cette page. Souhaitez-vous vous connecter avec un autre compte ?"
+
+#: templates/admin/login.html:61
+msgid "Forgotten your login credentials?"
+msgstr "Identifiants oubliés ?"
+
+#: templates/admin/login.html:66
+msgid "Log in"
+msgstr "Connexion"
+
+#: templates/home.html:20
+msgid "Welcome to the Home Page"
+msgstr "Bienvenue sur la page d'accueil"
+
+#: templates/home.html:21
+#, python-format
+msgid ""
+"\n"
+"            Welcome, %(username)s\n"
+"        "
+msgstr ""
+"\n"
+"            Bienvenue, %(username)s\n"
+"        "
+
+#: templates/home.html:24
+msgid "Your Account"
+msgstr "Votre compte"
+
+#: templates/home.html:25
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/home.html:29 templates/home.html:37
+msgid "All Reports"
+msgstr "Tous les rapports"
+
+#: templates/home.html:30
+msgid "My Activities"
+msgstr "Mes activités"
+
+#: templates/home.html:31 templates/home.html:67
+msgid "New Report"
+msgstr "Nouveau rapport"
+
+#: templates/home.html:41
+msgid "Filter by category"
+msgstr "Filtrer par catégorie"
+
+#: templates/home.html:43
+msgid "All"
+msgstr "Tous"
+
+#: templates/home.html:48
+msgid "Number of reports"
+msgstr "Nombre de rapports"
+
+#: templates/home.html:58
+msgid "My Reports"
+msgstr "Mes rapports"
+
+#: templates/home.html:60
+msgid "My Votes"
+msgstr "Mes votes"
+
+#: templates/home.html:62
+msgid "My Comments"
+msgstr "Mes commentaires"
+
+#: templates/home.html:75
+msgid "Image (optional)"
+msgstr "Image (facultatif)"
+
+#: templates/home.html:78
+msgid "Submit"
+msgstr "Soumettre"
+
+#: templates/home.html:89
+msgid "Submit Comment"
+msgstr "Soumettre le commentaire"
+
+#: templates/home.html:90
+msgid "Write a comment"
+msgstr "Écrire un commentaire"
+
+#: templates/home.html:93
+msgid "Reported by"
+msgstr "Rapporté par"
+
+#: templates/home.html:94
+msgid "Created at"
+msgstr "Créé le"
+
+#: templates/home.html:95
+msgid "Show all comments"
+msgstr "Afficher tous les commentaires"
+
+#: templates/home.html:96
+msgid "Hide extra comments"
+msgstr "Masquer les commentaires supplémentaires"
+
+#: templates/home.html:97
+msgid "Please fill in both title and description."
+msgstr "Veuillez remplir le titre et la description."
+
+#: templates/home.html:98
+msgid "Only JPG and PNG images are allowed."
+msgstr "Seules les images JPG et PNG sont autorisées."
+
+#: templates/home.html:99
+msgid "Image must be smaller than 2MB."
+msgstr "L'image doit être inférieure à 2 Mo."
+
+#: templates/home.html:100
+msgid "Report submitted successfully!"
+msgstr "Rapport soumis avec succès !"
+
+#: templates/home.html:101
+msgid "Error"
+msgstr "Erreur"
+
+#: templates/home.html:102
+msgid "Network error"
+msgstr "Erreur réseau"
+
+#: templates/home.html:103
+msgid "overseas"
+msgstr "outre-mer"
+
+#: templates/home.html:104
+msgid "Report Image"
+msgstr "Image du rapport"

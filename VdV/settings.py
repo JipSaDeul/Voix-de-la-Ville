@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-acsh$dm%ifldyraimfw=aieh8s47&zu%3=va6zx9x+@p!yt)87"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
@@ -148,3 +148,14 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATED_REDIRECT_URL = '/accounts/login/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+LANGUAGES = [
+    ('en', 'English'),                    # default english
+    ('zh', '简体中文'),                    # chinese simplified
+    ('ko', '중국 표준 조선어'),               # korean (chinese standard)
+    ('fr', 'Français'),                   # french - FR
+]

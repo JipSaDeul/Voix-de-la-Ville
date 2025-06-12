@@ -1,0 +1,278 @@
+.top-bar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #f4f6f9;
+    width: 100%;
+    align-items: center;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    background-color: #f4f6f9;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    z-index: 1000;
+    padding: 1em;
+    border-bottom: 1px solid #ccc;
+}
+
+header p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+
+nav {
+    position: sticky;
+    top: 4em; /* 这个值要根据 header 的高度来设置，通常是 padding 高度 + 字体 */
+    display: flex;
+    width: 100%;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    z-index: 999; /* 小于 header，避免覆盖 */
+}
+
+nav button {
+    flex: 1;
+    padding: 1em 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+nav button:hover {
+    background-color: #d0d0f0;
+}
+
+nav button:focus {
+    outline: none;
+    background-color: #a0a0fe;
+}
+
+a.button-link {
+    display: inline-block;
+    padding: 0.5em 1em;
+    margin: 0.5em 0.25em;
+    border: 2px #8080fe;
+    border-radius: 6px;
+    background-color: transparent;
+    color: #8080fe;
+    text-decoration: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a.button-link:hover {
+    background-color: #8080fe;
+    color: white;
+}
+
+.page {
+    padding: 2em;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: sans-serif;
+}
+
+.page h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1em;
+    color: #333;
+    text-align: center;
+}
+
+.page label {
+    display: block;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: #444;
+}
+
+.page select,
+.page input[type="number"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.5em;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 1em;
+}
+
+#reports {
+    margin-top: 2em;
+    min-height: 100px;
+    padding: 1em;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.filter-group {
+    display: flex;
+    flex-wrap: wrap; /* 让它在小屏自动换行 */
+    gap: 2em;
+    align-items: flex-end;
+    margin-bottom: 2em;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.report-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1.5em;
+    margin-bottom: 2em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    font-family: sans-serif;
+    max-width: 800px;
+    margin-inline: auto;
+}
+
+.report-card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5em;
+}
+
+.report-card p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.5;
+    margin: 0.5em 0;
+}
+
+.report-card img {
+    display: block;
+    margin-top: 1em;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+.report-card button {
+    display: inline-block;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+    padding: 0.5em 1em;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #8080fe;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.report-card button:hover {
+    background-color: #6666e0;
+}
+
+.admin-comment {
+    background-color: #fef3c7;
+    padding: 0.5em;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #5c4400;
+    margin-top: 0.5em;
+}
+
+.user-comment {
+    background-color: #f3f4f6;
+    padding: 0.5em;
+    border-radius: 4px;
+    margin-top: 0.5em;
+    color: #333;
+}
+
+.report-card hr {
+    margin-top: 2em;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+.report-card p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.5;
+    margin: 0.5em 0;
+    text-align: left; /* 确保所有段落左对齐 */
+}
+
+
+.report-card textarea ~ button {
+    display: block;
+    margin-top: 0.5em;
+}
+
+
+.report-card textarea {
+    display: block; /* 保证独占一行 */
+    width: 95%; /* 宽度为父容器的 95% */
+    margin-bottom: 1em; /* 给下面按钮留空间 */
+    padding: 0.75em;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    box-sizing: border-box; /* 避免超出边界 */
+}
+
+
+#page-new input[type="text"],
+#page-new textarea,
+#page-new input[type="file"] {
+    display: block;
+    width: 95%;
+    padding: 0.75em;
+    margin-bottom: 1em;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+#page-new textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#page-new button {
+    display: block;
+    margin-top: 0.5em;
+    padding: 0.5em 1em;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #8080fe;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#page-new button:hover {
+    background-color: #6666e0;
+}
+
+#page-new label {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    display: block;
+    color: #333;
+}

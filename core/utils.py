@@ -4,6 +4,8 @@ from typing import Dict, Optional, Tuple
 import spacy
 from argostranslate import translate
 from django.http import HttpRequest
+from django.utils.formats import date_format
+from django.utils.timezone import localtime
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 from langdetect import DetectorFactory, detect_langs, LangDetectException
 
@@ -131,7 +133,7 @@ def build_report_data(reports):
             "title": r.title,
             "description": r.description,
             "vote_count": vote_count,
-            "status": r.status,
+            "status": r.get_status_display(),
             "zipcode": z_info["zipcode"],
             "place": z_info["place"],
             "province": z_info["province"],
@@ -139,7 +141,7 @@ def build_report_data(reports):
             "category": r.category.name if r.category else None,
             "user_email": r.user.email if r.user else None,
             "user_name": r.user.username if r.user else None,
-            "created_at": r.created_at,
+            "created_at": date_format(localtime(r.created_at), format='DATETIME_FORMAT'),
         })
     return data
 

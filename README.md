@@ -30,6 +30,7 @@ A Django-based MVP for urban voice reporting and moderation.
    ```bash
    python manage.py makemigrations
    python manage.py migrate
+   python manage.py collectstatic
    ```
 
 5. **Create a superuser**
@@ -80,6 +81,20 @@ This will:
 * Does **not** delete admin or manually created users
 
 > ⚠️ Use with caution: this operation deletes data from the database.
+
+---
+
+
+### Multilanguage
+
+Use
+
+```bash
+django-admin compilemessages
+```
+to compile language codes
+
+Not natively available in Windows.
 
 ---
 

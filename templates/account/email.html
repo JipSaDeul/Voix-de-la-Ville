@@ -1,9 +1,11 @@
 {% extends "account/base_manage.html" %}
 {% load static %}
 {% load i18n %}
+<!-- templates/account/email.html -->
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/email_page.css' %}">
 {% endblock %}
 
 {% block head_title %}
@@ -11,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    <a href="/">Back to Home</a>
+    <a href="/">{% trans "Back to Home" %}</a>
     <h1>{% trans "Email Addresses" %}</h1>
 
     <p>{% trans "The following email addresses are associated with your account:" %}</p>

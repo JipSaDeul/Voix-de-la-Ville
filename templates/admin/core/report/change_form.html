@@ -1,8 +1,9 @@
 {% extends "admin/change_form.html" %}
-
+{% load i18n %}
+<!-- templates/admin/change_form.html -->
 {% block submit_buttons_bottom %}
   {{ block.super }}
   {% if admin_comment_url %}
-    <a class="button" href="{{ admin_comment_url }}">📝 Add/Edit Admin Comment</a>
+    <a class="button" href="{{ admin_comment_url }}">📝 {% trans 'Add/Edit Admin Comment'%}</a>
   {% endif %}
 {% endblock %}

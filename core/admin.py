@@ -9,6 +9,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import path, reverse
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
 from core.utils import create_or_update_admin_comment
 from core.utils import get_city_info_by_zipcodes
@@ -110,6 +111,7 @@ class ReportAdmin(admin.ModelAdmin):
         return deleted_objects, model_count, perms_needed, protected
 
     list_display = ['title', 'user', 'status', 'zipcode', 'city_info', 'created_at']
+
     readonly_fields = [
         'user', 'category', 'title', 'description',
         'image', 'zipcode', 'city_info', 'latitude', 'longitude', 'created_at'
@@ -128,7 +130,7 @@ class ReportAdmin(admin.ModelAdmin):
                 return f"{info['place']}, {info['province']} ({info['zipcode']})"
         return "Unknown"
 
-    city_info.short_description = "City Info"
+    city_info.short_description = _("City Info")
 
     def get_urls(self):
         urls = super().get_urls()
@@ -196,7 +198,7 @@ class CommentAdmin(admin.ModelAdmin):
         url = reverse('admin:core_report_change', args=[obj.report.id])
         return format_html('<a href="{}">{}</a>', url, obj.report.title)
 
-    report_link.short_description = 'Report'
+    report_link.short_description = _('Report')
 
     def has_add_permission(self, request):
         return False
@@ -218,7 +220,7 @@ class AdminCommentAdmin(admin.ModelAdmin):
         url = reverse('admin:core_report_change', args=[obj.report.id])
         return format_html('<a href="{}">{}</a>', url, obj.report.title)
 
-    report_link.short_description = 'Report'
+    report_link.short_description = _('Report')
 
     def has_add_permission(self, request):
         return False

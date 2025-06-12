@@ -3,6 +3,7 @@ import {getUserLocation} from "./utils.js";
 const userLang = window.APP_CONFIG.userLang;
 const categoryMap = {};
 
+
 document.addEventListener("DOMContentLoaded", () => {
     setupNavigation();
     fetchCategories();
@@ -121,6 +122,7 @@ function loadSection(url, containerId) {
 
 function renderReport(report, container) {
     const div = document.createElement("div");
+    div.className = "report-card";
 
     const {
         id,
@@ -156,37 +158,37 @@ function renderReport(report, container) {
             const {description_en, description_fr, name_en, name_fr} = catData;
             const name = userLang === "fr" ? name_fr : name_en;
             const desc = userLang === "fr" ? description_fr : description_en;
-            catEl.innerHTML = `<strong>Category:</strong> ${name}<br><em>${desc}</em>`;
+            catEl.innerHTML = `<strong>${t.category}:</strong> ${name}<br><em>${desc}</em>`;
             div.appendChild(catEl);
         }
     }
 
     // Status
     const statusEl = document.createElement("p");
-    statusEl.innerHTML = `<strong>Status:</strong> ${status}`;
+    statusEl.innerHTML = `<strong>${t.status}:</strong> ${status}`;
     div.appendChild(statusEl);
 
     // Image
     if (image_url) {
         const img = document.createElement("img");
         img.src = image_url;
-        img.alt = "Report Image";
+        img.alt = t.image_placeholder;
         img.style.maxWidth = "300px";
         div.appendChild(img);
     }
 
     // Metadata
     const meta = document.createElement("p");
-    meta.innerHTML = `<strong>Reported by:</strong> ${user_name || "Anonymous"} (${user_email || "N/A"})<br><strong>Created at:</strong> ${new Date(created_at).toLocaleString()}`;
+    meta.innerHTML = `<strong>${t.reported_by}:</strong> ${user_name || "Anonymous"} (${user_email || "N/A"})<br><strong>${t.created_at}:</strong> ${created_at}`;
     div.appendChild(meta);
 
     // Votes
     const votes = document.createElement("p");
-    votes.innerHTML = `Votes: <span id="votes-${id}">${vote_count || 0}</span>`;
+    votes.innerHTML = `${t.vote}: <span id="votes-${id}">${vote_count || 0}</span>`;
     div.appendChild(votes);
 
     const voteBtn = document.createElement("button");
-    voteBtn.textContent = "Vote";
+    voteBtn.textContent = t.vote;
     voteBtn.addEventListener("click", () => {
         fetch("/api/votes/", {
             method: "POST",
@@ -200,7 +202,7 @@ function renderReport(report, container) {
     // City Code
     const locEl = document.createElement("p");
     if (zipcode.length === 0 || zipcode === "/") {
-        locEl.textContent = `📍 ${userLang === "fr" ? "outre-mer" : "overseas"}`;
+        locEl.textContent = `📍 ${t.overseas}`;
     } else {
         locEl.textContent = `📍 ${place}[${zipcode}], ${province}`;
     }
@@ -210,11 +212,14 @@ function renderReport(report, container) {
 
     // Comment
     const textarea = document.createElement("textarea");
-    textarea.placeholder = "Write a comment...";
+    textarea.placeholder = t.write_comment;
     div.appendChild(textarea);
 
+        const br = document.createElement("br");
+    div.appendChild(br);
+
     const commentBtn = document.createElement("button");
-    commentBtn.textContent = "Submit Comment";
+    commentBtn.textContent = t.submit_comment;
     commentBtn.addEventListener("click", () => {
         const content = textarea.value.trim();
         if (!content) return;
@@ -284,11 +289,11 @@ function renderComments(reportId, comments) {
 
     if (hidden.length > 0) {
         const toggle = document.createElement("button");
-        toggle.textContent = "Show all comments";
+        toggle.textContent = t.all_comments;
         toggle.addEventListener("click", () => {
             const expanded = hiddenDiv.style.display === "block";
             hiddenDiv.style.display = expanded ? "none" : "block";
-            toggle.textContent = expanded ? "Show all comments" : "Hide extra comments";
+            toggle.textContent = expanded ? t.all_comments : t.hide_comments;
         });
         container.appendChild(toggle);
     }
@@ -303,7 +308,6 @@ function createCommentElement(c) {
 }
 
 
-
 function submitNewReport() {
     const title = document.getElementById("new-title").value.trim();
     const description = document.getElementById("new-description").value.trim();
@@ -312,7 +316,7 @@ function submitNewReport() {
     resultEl.textContent = "";  // 清空旧信息
 
     if (!title || !description) {
-        resultEl.textContent = "Please fill in both title and description.";
+        resultEl.textContent = t.please_fill;
         return;
     }
 
@@ -321,11 +325,11 @@ function submitNewReport() {
 
     if (image) {
         if (!allowedTypes.includes(image.type)) {
-            resultEl.textContent = "❌ Only JPG and PNG images are allowed.";
+            resultEl.textContent = `❌ ${t.image_type_error}`;
             return;
         }
         if (image.size > maxSize) {
-            resultEl.textContent = "❌ Image must be smaller than 2MB.";
+            resultEl.textContent = `❌ ${t.image_size_error}`;
             return;
         }
     }
@@ -352,12 +356,12 @@ function submitNewReport() {
             }
 
             if (res.ok && result.id) {
-                resultEl.textContent = "✅ Report submitted successfully!";
+                resultEl.textContent = `✅ ${t.submit_success}`;
             } else {
-                resultEl.textContent = `❌ Error: ${result.error || "Submission failed."}`;
+                resultEl.textContent = `❌ ${t.error_prefix} ${result.error || "Submission failed."}`;
             }
         })
         .catch(err => {
-            resultEl.textContent = `❌ Network error: ${err}`;
+            resultEl.textContent = `❌ ${t.network_error_prefix} ${err}`;
         });
 }

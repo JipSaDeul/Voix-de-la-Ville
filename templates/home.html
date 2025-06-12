@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+<!-- templates/home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,52 +12,70 @@
             display: none;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
-<h1>Welcome to the Home Page</h1>
-<p>Welcome, {{ user.username }}</p>
+<div class="top-bar">
+    <header>
+        <h1>{% trans 'Welcome to the Home Page' %}</h1>
+        <p>{% blocktrans with username=user.username %}
+            Welcome, {{ username }}
+        {% endblocktrans %}</p>
+        <a href="/accounts/email/" class="button-link">{% trans 'Your Account' %}</a>
+        <a href="/accounts/logout/" class="button-link">{% trans 'Logout' %}</a>
+    </header>
 
-<nav>
-    <button data-page="page-all">All Reports</button>
-    <button data-page="page-my">My Activity</button>
-    <button data-page="page-new">New Report</button>
-</nav>
+    <nav>
+        <button data-page="page-all">{% trans 'All Reports' %}</button>
+        <button data-page="page-my">{% trans 'My Activities' %}</button>
+        <button data-page="page-new">{% trans 'New Report' %}</button>
+    </nav>
+</div>
 
-    <a href="/accounts/email/">Your Account</a>
 
 <div id="page-all" class="page">
-    <h2>All Reports</h2>
+    <h2>{% trans 'All Reports' %}</h2>
 
-    <label for="category-filter">Filter by category:</label>
-    <select id="category-filter">
-        <option value="">All</option>
-    </select>
+    <div class="filter-group">
+        <div class="filter-item">
+            <label for="category-filter">{% trans 'Filter by category' %}:</label>
+            <select id="category-filter">
+                <option value="">{% trans 'All' %}</option>
+            </select>
+        </div>
 
-    <label for="count-filter">Number of reports:</label>
-    <input id="count-filter" type="number" min="10" value="10"/>
+        <div class="filter-item">
+            <label for="count-filter">{% trans 'Number of reports' %}:</label>
+            <input id="count-filter" type="number" min="10" value="10"/>
+        </div>
+    </div>
 
     <div id="reports"></div>
 </div>
 
 
 <div id="page-my" class="page hidden">
-    <h2>My Reports</h2>
+    <h2>{% trans 'My Reports' %}</h2>
     <div id="my-reports"></div>
-    <h2>My Votes</h2>
+    <h2>{% trans 'My Votes' %}</h2>
     <div id="my-votes"></div>
-    <h2>My Comments</h2>
+    <h2>{% trans 'My Comments' %}</h2>
     <div id="my-comments"></div>
 </div>
 
 <div id="page-new" class="page" style="display: none;">
-    <h2>New Report</h2>
-    <label for="new-title">
-    </label><input type="text" id="new-title" placeholder="Title"><br>
-    <label for="new-description"></label>
-    <textarea id="new-description" placeholder="Description"></textarea><br>
+    <h2>{% trans 'New Report' %}</h2>
+
+    <label for="new-title">{% trans 'Title' %}</label>
+    <input type="text" id="new-title" placeholder="{% trans 'Title' %}">
+
+    <label for="new-description">{% trans 'Description' %}</label>
+    <textarea id="new-description" placeholder="{% trans 'Description' %}"></textarea>
+
+    <label for="new-image">{% trans 'Image (optional)' %}</label>
     <input type="file" id="new-image" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
-    <br>
-    <button id="submit-report">Submit</button>
+
+    <button id="submit-report">{% trans 'Submit' %}</button>
     <p id="submit-result"></p>
 </div>
 
@@ -63,6 +83,25 @@
 <script>
     window.APP_CONFIG = {
         userLang: navigator.language.startsWith("fr") ? "fr" : "en"
+    };
+    const t = {
+        vote: "{% trans 'Vote' %}",
+        submit_comment: "{% trans 'Submit Comment' %}",
+        write_comment: "{% trans 'Write a comment' %}...",
+        category: "{% trans 'Category' %}",
+        status: "{% trans 'Status' %}",
+        reported_by: "{% trans 'Reported by' %}",
+        created_at: "{% trans 'Created at' %}",
+        all_comments: "{% trans 'Show all comments' %}",
+        hide_comments: "{% trans 'Hide extra comments' %}",
+        please_fill: "{% trans 'Please fill in both title and description.' %}",
+        image_type_error: "{% trans 'Only JPG and PNG images are allowed.' %}",
+        image_size_error: "{% trans 'Image must be smaller than 2MB.' %}",
+        submit_success: "{% trans 'Report submitted successfully!' %}",
+        error_prefix: "{% trans 'Error' %}:",
+        network_error_prefix: "{% trans 'Network error' %}:",
+        overseas: "{% trans 'overseas' %}",
+        image_placeholder: "{% trans 'Report Image' %}"
     };
 </script>
 </body>
