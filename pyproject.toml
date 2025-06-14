@@ -18,7 +18,8 @@ dependencies = [
     "transformers",
     "torch",
     "langdetect",
-    "tqdm"
+    "tqdm",
+    "whitenoise"
 ]
 
 [project.optional-dependencies]

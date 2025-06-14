@@ -15,7 +15,7 @@
     <form method="post" action="/accounts/logout/">
         {% csrf_token %}
         <button type="submit">{% trans "Sign Out" %}</button>
-        <button onclick="window.history.back();" class="default-fallback-btn">{% trans "No, Back to Homepage" %}</button>
+        <button type="button" onclick="window.history.back();" class="default-fallback-btn">{% trans "No, Back to Homepage" %}</button>
     </form>
 </body>
 </html>
