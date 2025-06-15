@@ -6,8 +6,8 @@ from argostranslate import translate
 from django.http import HttpRequest
 from django.utils.formats import date_format
 from django.utils.timezone import localtime
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 from langdetect import DetectorFactory, detect_langs, LangDetectException
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
 from .cities.helper import get_city_info_by_zipcodes
 from .models import Comment, Vote, AdminComment
@@ -151,7 +151,7 @@ Translations Related
 """
 
 # Load the spaCy model (e.g., en_core_web_sm) for natural language processing
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_md")
 tokenizer = AutoTokenizer.from_pretrained("unitary/toxic-bert")
 model = AutoModelForSequenceClassification.from_pretrained("unitary/toxic-bert")
 toxic_classifier = pipeline("text-classification", model=model, tokenizer=tokenizer, device=-1)
@@ -214,32 +214,50 @@ categories = {
     "infrastructure": {
         "name": "Infrastructure",
         "description": "Issues related to roads, streets, sidewalks, and other infrastructure concerns.",
-        "keywords": ["road", "street", "sidewalk", "pothole", "repair", "construction"]
+        "keywords": [
+            "road", "street", "sidewalk", "pothole", "pavement", "curb", "repair",
+            "construction", "infrastructure", "asphalt", "bridge", "crosswalk"
+        ]
     },
     "environment": {
         "name": "Environment",
         "description": "Concerns related to noise, pollution, cleanliness, and the environment.",
-        "keywords": ["noise", "sound", "pollution", "clean", "garbage", "smell", "dust", "cleanliness"]
+        "keywords": [
+            "noise", "sound", "pollution", "clean", "garbage", "trash", "waste",
+            "smell", "odor", "dust", "dirty", "cleanliness", "litter", "air quality"
+        ]
     },
     "traffic": {
         "name": "Traffic",
         "description": "Traffic-related issues such as congestion, parking, and traffic signals.",
-        "keywords": ["traffic", "signal", "congestion", "parking", "bus", "car", "bus stop", "traffic jam"]
+        "keywords": [
+            "traffic", "signal", "traffic light", "congestion", "parking", "car",
+            "vehicle", "bus", "bus stop", "traffic jam", "intersection", "accident"
+        ]
     },
     "security": {
         "name": "Security",
         "description": "Security-related issues like crime, theft, and vandalism.",
-        "keywords": ["theft", "crime", "robbery", "assault", "security", "police", "danger", "vandalism"]
+        "keywords": [
+            "theft", "crime", "robbery", "assault", "violence", "security", "police",
+            "danger", "vandalism", "break-in", "suspicious", "harassment", "threat"
+        ]
     },
     "public_service": {
         "name": "Public Service",
         "description": "Issues regarding public services like water, electricity, and emergency services.",
-        "keywords": ["water", "electricity", "sewer", "fire", "service", "maintenance", "emergency"]
+        "keywords": [
+            "water", "electricity", "power", "power outage", "sewer", "fire",
+            "service", "maintenance", "emergency", "gas", "utilities", "lighting"
+        ]
     },
     "health": {
         "name": "Health",
         "description": "Health-related issues such as disease, sanitation, and medical services.",
-        "keywords": ["health", "hospital", "doctor", "sanitation", "disease", "cleanliness", "infection"]
+        "keywords": [
+            "health", "hospital", "clinic", "doctor", "sanitation", "disease",
+            "infection", "epidemic", "virus", "illness", "medical", "cleanliness"
+        ]
     },
     "other": {
         "name": "Other",
@@ -249,6 +267,8 @@ categories = {
 }
 
 
+SIMILARITY_THRESHOLD = 0.50  # threshold
+
 def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
     text_en = to_eng(text).strip()
     if not text_en:
@@ -256,28 +276,38 @@ def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
 
     doc = nlp(text_en)
 
-    print(doc)
-    # Nonsense
     meaningful_tokens = [
-        t for t in doc
-        if t.is_alpha and len(t.text) > 2 and t.has_vector
+        t for t in doc if t.is_alpha and len(t.text) > 2 and t.has_vector
     ]
-    print(meaningful_tokens)
 
-    if len(meaningful_tokens) < 1:
+    if not meaningful_tokens:
         return None
 
+    keyword_vectors = {
+        key: [nlp(kw)[0] for kw in info["keywords"]]
+        for key, info in categories.items()
+    }
+
     counts = {key: 0 for key in categories}
+
     for token in meaningful_tokens:
-        for key, info in categories.items():
-            if token.lemma_.lower() in info["keywords"]:
-                counts[key] += 1
+        for key, vec_list in keyword_vectors.items():
+            for kw_vec in vec_list:
+                sim = token.similarity(kw_vec)
+                if sim > SIMILARITY_THRESHOLD:
+                    counts[key] += 1
+                    break # one keyword will match
 
     best_match = max(counts, key=counts.get)
     if counts[best_match] == 0:
-        return categories["other"]
+        return {
+            "key": "other",
+            "name": categories["other"]["name"],
+            "description": categories["other"]["description"]
+        }
 
     return {
+        "key": best_match,
         "name": categories[best_match]["name"],
         "description": categories[best_match]["description"]
     }
@@ -286,16 +316,36 @@ def nlp_categorize(text: str) -> Optional[Dict[str, str]]:
 def detect_profanity(text: str, threshold: float = 0.8) -> Dict[str, object]:
     """
     Detects whether the input text contains offensive or toxic language.
-    Handles language detection and automatic translation before classification.
-
-    :param text: The input text to analyze.
-    :param threshold: The score threshold to consider text as toxic.
-    :return: Dictionary with `is_toxic`, `score`, `label` (if applicable).
+    Attempts to ignore toxicity caused solely by safe context words, but
+    if all words are potentially toxic (e.g., "trash garbage"), it is still flagged.
     """
 
-    text_en = to_eng(text)
+    text_en = to_eng(text).strip().lower()
+    initial_result = toxic_classifier(text_en)[0]
+    initial_score = initial_result["score"]
 
-    result = toxic_classifier(text_en)[0]
+    if initial_score < threshold:
+        return {"is_toxic": False, "score": initial_score}
+
+    # Step 2: Tokenize and filter
+    doc = nlp(text_en)
+    tokens = [t.text.lower() for t in doc if t.is_alpha]
+
+    whitelist = {
+        "trash", "garbage", "waste", "litter", "pollution",
+        "smell", "dirty", "cleanliness", "sewage", "sanitation"
+    }
+
+    # Remove whitelist words
+    filtered_tokens = [t for t in tokens if t not in whitelist]
+
+    if not filtered_tokens:
+        # 🚨 Only toxic-like words remain, treat as still toxic
+        return {"is_toxic": True, "score": initial_score}
+
+    # Step 3: Re-evaluate filtered sentence
+    filtered_text = " ".join(filtered_tokens)
+    result = toxic_classifier(filtered_text)[0]
 
     return {
         "is_toxic": result["score"] >= threshold,

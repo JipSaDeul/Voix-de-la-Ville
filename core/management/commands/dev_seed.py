@@ -99,9 +99,15 @@ class Command(BaseCommand):
             zipcode = get_zipcode_by_location(lat, lon)
             category_data = nlp_categorize(report_descs[i])
             if category_data:
-                category = category_objs.get(category_data["name"], category_objs["other"])
+                category, _ = ReportCategory.objects.get_or_create(
+                    name=category_data["name"],
+                    defaults={"description": category_data["description"]}
+                )
             else:
-                category = category_objs["other"]
+                category = ReportCategory.objects.get_or_create(
+                    name="Other",
+                    defaults={"description": "Any issue that doesn't fall under the standard categories."}
+                )[0]
 
             report = Report.objects.create(
                 user=user,

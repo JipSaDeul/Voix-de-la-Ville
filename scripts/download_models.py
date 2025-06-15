@@ -6,8 +6,8 @@ import spacy
 def download_spacy_model():
     try:
         # Try to download the spaCy model
-        print("Downloading spaCy 'en_core_web_sm' model...")
-        spacy.cli.download("en_core_web_sm")
+        print("Downloading spaCy 'en_core_web_md' model...")
+        spacy.cli.download("en_core_web_md")
         print("Model downloaded successfully.")
     except Exception as e:
         print(f"Error while downloading model: {e}")
