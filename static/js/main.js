@@ -74,6 +74,12 @@ function switchPage(activeId) {
         }
         el.style.display = (id === activeId) ? "block" : "none";
     });
+
+    if (activeId === "page-all") {
+        fetchReports();
+    } else if (activeId === "page-my") {
+        fetchUserActivity();
+    }
 }
 
 function fetchReports() {
